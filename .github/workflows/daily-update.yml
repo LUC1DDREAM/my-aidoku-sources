@@ -1,6 +1,12 @@
 name: Daily source update
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - "scripts/update_sources.py"
+      - ".github/workflows/daily-update.yml"
   schedule:
     - cron: "17 14 * * *"
   workflow_dispatch:
@@ -27,7 +33,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add .nojekyll CHECKSUMS.sha256 README.md icons index.json index.min.json inventory.json sources
+          git add .nojekyll CHECKSUMS.sha256 README.md icons index.json index.min.json inventory.json legacy scripts sources
           if git diff --cached --quiet; then
             echo "No catalog changes."
           else
