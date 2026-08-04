@@ -1,12 +1,15 @@
 {
     "name":  "Nixzle\u0027s Public English Aidoku Sources",
-    "generatedAt":  "2026-08-04T14:32:17.8967617Z",
-    "sourceCount":  106,
+    "generatedAt":  "2026-08-04T15:22:10.6620137Z",
+    "sourceCount":  105,
     "excludedPersonalUseOnly":  [
                                     "en.atsumaru",
                                     "multi.mangaball",
                                     "multi.onisaga"
                                 ],
+    "excludedNonEnglish":  [
+                               "fr.sushiscan"
+                           ],
     "replacedWithCommunityBuilds":  [
                                         "en.comix",
                                         "multi.mangadotnet",
@@ -768,15 +771,6 @@
                         "repository":  "tachibana-shin/aidoku-community-sources",
                         "license":  "MIT OR Apache-2.0",
                         "sha256":  "03de9990516e029b428ac8c43f3057a248f29c2c115948775203055cddf80e2d"
-                    },
-                    {
-                        "id":  "fr.sushiscan",
-                        "name":  "Sushiscan",
-                        "version":  8,
-                        "file":  "sources/fr.sushiscan-v8.aix",
-                        "repository":  "Aidoku-Community/sources",
-                        "license":  "MIT OR Apache-2.0",
-                        "sha256":  "6caf194bfccadcfc6e9035ba1f207c0e37257f72be292d85e700339552d1ea25"
                     },
                     {
                         "id":  "multi.batoto",

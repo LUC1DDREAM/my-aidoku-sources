@@ -1022,18 +1022,6 @@
                         "baseURL":  "https://zscans.com"
                     },
                     {
-                        "id":  "fr.sushiscan",
-                        "name":  "Sushiscan",
-                        "version":  8,
-                        "iconURL":  "icons/fr.sushiscan-v8.png",
-                        "downloadURL":  "sources/fr.sushiscan-v8.aix",
-                        "languages":  [
-                                          "en"
-                                      ],
-                        "contentRating":  1,
-                        "baseURL":  "https://sushiscan.net"
-                    },
-                    {
                         "id":  "multi.batoto",
                         "name":  "Bato.to",
                         "version":  5,
