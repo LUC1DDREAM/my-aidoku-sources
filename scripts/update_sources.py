@@ -23,6 +23,17 @@ ENGLISH_MARKERS = {"en", "all", "multi"}
 SOURCE_PREFERENCES: dict[str, str] = {}
 ACTIVE_REPOSITORY = "Aidoku-Community/sources"
 
+# The original ReadComicOnline service has no live domain. Keep its package in
+# the legacy catalog for existing installs, but do not advertise it as a
+# maintained source. Read Comics Online is a separate, currently active source.
+MAINTAINED_EXCLUDED_IDS = {"en.readcomiconline"}
+
+# Some upstream manifests lag behind the app version actually required by the
+# source implementation. Catalog-level overrides prevent incompatible installs.
+MIN_APP_VERSION_OVERRIDES = {
+    "en.readcomicsonline": "0.8.4",
+}
+
 # Only repositories whose packages may be publicly redistributed are included.
 # Higher priority wins when two repositories publish the same source or website.
 UPSTREAMS = (
@@ -178,7 +189,10 @@ def candidate_from_entry(
     content_rating = info.get("contentRating", info.get("nsfw"))
     if content_rating is None:
         content_rating = entry.get("contentRating", entry.get("nsfw", 0))
-    minimum_app_version = info.get("minAppVersion", entry.get("minAppVersion"))
+    minimum_app_version = MIN_APP_VERSION_OVERRIDES.get(
+        source_id,
+        info.get("minAppVersion", entry.get("minAppVersion")),
+    )
 
     return {
         "id": source_id,
@@ -373,7 +387,10 @@ def main() -> None:
             candidates.append(candidate_from_entry(upstream, entry, current_index, current_inventory))
 
     active_candidates = [
-        candidate for candidate in candidates if candidate["repository"] == ACTIVE_REPOSITORY
+        candidate
+        for candidate in candidates
+        if candidate["repository"] == ACTIVE_REPOSITORY
+        and candidate["id"] not in MAINTAINED_EXCLUDED_IDS
     ]
     active_selected, active_duplicates = select_candidates(active_candidates)
     all_selected, all_duplicates = select_candidates(candidates)

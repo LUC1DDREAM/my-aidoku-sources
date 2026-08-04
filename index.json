@@ -55,14 +55,15 @@
     {
       "id": "en.batcave",
       "name": "BatCave",
-      "version": 1,
-      "iconURL": "icons/en.batcave-v1.png",
-      "downloadURL": "sources/en.batcave-v1.aix",
+      "version": 2,
+      "iconURL": "icons/en.batcave-v2.png",
+      "downloadURL": "sources/en.batcave-v2.aix",
       "languages": [
         "en"
       ],
       "contentRating": 0,
-      "baseURL": "https://batcave.biz"
+      "baseURL": "https://batcave.biz",
+      "minAppVersion": "0.7.1"
     },
     {
       "id": "en.comix",
@@ -409,17 +410,17 @@
       "minAppVersion": "0.7.1"
     },
     {
-      "id": "en.readcomiconline",
-      "name": "ReadComicOnline",
+      "id": "en.readcomicsonline",
+      "name": "Read Comics Online",
       "version": 2,
-      "iconURL": "icons/en.readcomiconline-v2.png",
-      "downloadURL": "sources/en.readcomiconline-v2.aix",
+      "iconURL": "icons/en.readcomicsonline-v2.png",
+      "downloadURL": "sources/en.readcomicsonline-v2.aix",
       "languages": [
         "en"
       ],
-      "contentRating": 0,
-      "baseURL": "https://rcostation.xyz",
-      "minAppVersion": "0.7.1"
+      "contentRating": 1,
+      "baseURL": "https://readcomicsonline.ru",
+      "minAppVersion": "0.8.4"
     },
     {
       "id": "en.rizzfables",
@@ -745,9 +746,9 @@
     {
       "id": "multi.mangaplus",
       "name": "MANGA Plus",
-      "version": 4,
-      "iconURL": "icons/multi.mangaplus-v4.png",
-      "downloadURL": "sources/multi.mangaplus-v4.aix",
+      "version": 5,
+      "iconURL": "icons/multi.mangaplus-v5.png",
+      "downloadURL": "sources/multi.mangaplus-v5.aix",
       "languages": [
         "en",
         "es",

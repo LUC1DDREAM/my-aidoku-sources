@@ -1,6 +1,6 @@
 {
   "name": "Nixzle's Maintained Public English Aidoku Sources",
-  "generatedAt": "2026-08-04T16:27:56+00:00",
+  "generatedAt": "2026-08-04T22:47:33+00:00",
   "sourceCount": 55,
   "catalogPolicy": "Packages currently published by the active Aidoku community repository",
   "languagePolicy": "English or multilingual entries advertising en, All, or multi",
@@ -64,11 +64,11 @@
     {
       "id": "en.batcave",
       "name": "BatCave",
-      "version": 1,
-      "file": "sources/en.batcave-v1.aix",
+      "version": 2,
+      "file": "sources/en.batcave-v2.aix",
       "repository": "Aidoku-Community/sources",
       "license": "MIT OR Apache-2.0",
-      "sha256": "2ef3c8535279bf17dbb098393fdb38a8bf2d2654eb09882a313e5b839fa4cd87"
+      "sha256": "decd237504483292eabaf03b39c2e5932262e77117f1fb9377baada4f91bb9af"
     },
     {
       "id": "en.comix",
@@ -323,13 +323,13 @@
       "sha256": "d16b41b28173b786c78c1c33bcec1c252d385065349f598eb5131c1cd4f15586"
     },
     {
-      "id": "en.readcomiconline",
-      "name": "ReadComicOnline",
+      "id": "en.readcomicsonline",
+      "name": "Read Comics Online",
       "version": 2,
-      "file": "sources/en.readcomiconline-v2.aix",
+      "file": "sources/en.readcomicsonline-v2.aix",
       "repository": "Aidoku-Community/sources",
       "license": "MIT OR Apache-2.0",
-      "sha256": "08dfff7c9474c9099172ee29e1c0a1ef36762a8d0c46a9e96174becbeb0e3ee4"
+      "sha256": "581bc2a452cda96cd60050994bbb2f45a9bc82fd0d2f15cc5c414eb9adce2449"
     },
     {
       "id": "en.rizzfables",
@@ -487,11 +487,11 @@
     {
       "id": "multi.mangaplus",
       "name": "MANGA Plus",
-      "version": 4,
-      "file": "sources/multi.mangaplus-v4.aix",
+      "version": 5,
+      "file": "sources/multi.mangaplus-v5.aix",
       "repository": "Aidoku-Community/sources",
       "license": "MIT OR Apache-2.0",
-      "sha256": "791ce296fefe8c9d12fe8d47b4cef7ecce2c06add0c9b0833e8fd1f9e728bae4"
+      "sha256": "61e3330cc06fb448482d57299417472136fb75867fcf316812d6cd9eed89976e"
     },
     {
       "id": "multi.myreadingmanga",
