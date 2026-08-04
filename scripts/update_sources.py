@@ -20,11 +20,8 @@ ROOT = Path(__file__).resolve().parents[1]
 USER_AGENT = "Nixzle-Aidoku-Sources-Updater/1.0"
 TIMEOUT_SECONDS = 45
 ENGLISH_MARKERS = {"en", "all", "multi"}
-SOURCE_PREFERENCES = {
-    # The community v23 package requires Aidoku 0.8.4 and is hidden on older builds.
-    # This validated build targets the same comix.to site without that minimum.
-    "en.comix": "tachibana-shin/aidoku-sources-next",
-}
+SOURCE_PREFERENCES: dict[str, str] = {}
+ACTIVE_REPOSITORY = "Aidoku-Community/sources"
 
 # Only repositories whose packages may be publicly redistributed are included.
 # Higher priority wins when two repositories publish the same source or website.
@@ -124,9 +121,9 @@ def read_package(package: bytes, label: str) -> tuple[dict, bytes]:
     return info, icon
 
 
-def load_current() -> tuple[dict[str, dict], dict[str, dict]]:
-    index_path = ROOT / "index.min.json"
-    inventory_path = ROOT / "inventory.json"
+def load_current(catalog_root: Path) -> tuple[dict[str, dict], dict[str, dict]]:
+    index_path = catalog_root / "index.min.json"
+    inventory_path = catalog_root / "inventory.json"
     if not index_path.exists() or not inventory_path.exists():
         return {}, {}
     index = json.loads(index_path.read_text(encoding="utf-8-sig"))
@@ -245,19 +242,21 @@ def select_candidates(candidates: list[dict]) -> tuple[list[dict], list[dict]]:
     return sorted(selected_by_site.values(), key=lambda item: item["id"]), duplicates
 
 
-def write_catalog(selected: list[dict], duplicates: list[dict]) -> None:
-    current_count = 0
-    try:
-        current_count = len(json.loads((ROOT / "index.min.json").read_text(encoding="utf-8-sig"))["sources"])
-    except (FileNotFoundError, KeyError, json.JSONDecodeError):
-        pass
-    if current_count and len(selected) < int(current_count * 0.75):
-        raise RuntimeError(
-            f"Safety check stopped an unexpectedly large catalog shrink: {current_count} -> {len(selected)}"
-        )
+def write_catalog(
+    selected: list[dict],
+    duplicates: list[dict],
+    catalog_root: Path,
+    list_name: str,
+    inventory_name: str,
+    catalog_policy: str,
+    catalog_upstreams: tuple[dict, ...],
+) -> None:
+    if len(selected) < 20:
+        raise RuntimeError(f"Safety check stopped an unexpectedly small catalog: {len(selected)}")
 
     checked_at = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
-    with tempfile.TemporaryDirectory(prefix="aidoku-refresh-", dir=ROOT) as temp_name:
+    catalog_root.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix="aidoku-refresh-", dir=catalog_root) as temp_name:
         temp = Path(temp_name)
         source_dir = temp / "sources"
         icon_dir = temp / "icons"
@@ -302,18 +301,19 @@ def write_catalog(selected: list[dict], duplicates: list[dict]) -> None:
                 }
             )
 
-        source_list = {"name": "Nixzle's English Aidoku Sources", "sources": index_entries}
+        source_list = {"name": list_name, "sources": index_entries}
         inventory = {
-            "name": "Nixzle's Public English Aidoku Sources",
+            "name": inventory_name,
             "generatedAt": checked_at,
             "sourceCount": len(inventory_entries),
+            "catalogPolicy": catalog_policy,
             "languagePolicy": "English or multilingual entries advertising en, All, or multi",
             "excludedPersonalUseOnly": ["en.atsumaru", "multi.mangaball", "multi.onisaga"],
-            "replacedWithCommunityBuilds": ["en.comix", "multi.mangadotnet", "multi.kagane"],
+            "replacedWithCommunityBuilds": ["multi.mangadotnet", "multi.kagane"],
             "excludedNonEnglish": ["Non-English-only source packages"],
             "upstreams": [
                 {"repository": upstream["name"], "index": upstream["index"], "license": upstream["license"]}
-                for upstream in UPSTREAMS
+                for upstream in catalog_upstreams
             ],
             "excludedDuplicates": duplicates,
             "sources": inventory_entries,
@@ -334,7 +334,7 @@ def write_catalog(selected: list[dict], duplicates: list[dict]) -> None:
         (temp / "CHECKSUMS.sha256").write_text("\n".join(checksum_lines) + "\n", encoding="utf-8")
 
         for directory in ("sources", "icons"):
-            destination = ROOT / directory
+            destination = catalog_root / directory
             destination.mkdir(exist_ok=True)
             for old_item in destination.iterdir():
                 if old_item.is_dir():
@@ -344,9 +344,9 @@ def write_catalog(selected: list[dict], duplicates: list[dict]) -> None:
             for new_item in (temp / directory).iterdir():
                 shutil.copy2(new_item, destination / new_item.name)
         for filename in ("index.min.json", "index.json", "inventory.json", "CHECKSUMS.sha256"):
-            shutil.move(str(temp / filename), ROOT / filename)
+            shutil.move(str(temp / filename), catalog_root / filename)
 
-    readme_path = ROOT / "README.md"
+    readme_path = catalog_root / "README.md"
     if readme_path.exists():
         readme = readme_path.read_text(encoding="utf-8-sig")
         readme = re.sub(
@@ -355,11 +355,14 @@ def write_catalog(selected: list[dict], duplicates: list[dict]) -> None:
             readme,
         )
         readme_path.write_text(readme, encoding="utf-8")
-    (ROOT / ".nojekyll").touch()
+    (catalog_root / ".nojekyll").touch()
 
 
 def main() -> None:
-    current_index, current_inventory = load_current()
+    current_index, current_inventory = load_current(ROOT)
+    legacy_index, legacy_inventory = load_current(ROOT / "legacy")
+    current_index.update(legacy_index)
+    current_inventory.update(legacy_inventory)
     candidates: list[dict] = []
     for upstream in UPSTREAMS:
         payload = fetch_json(upstream["index"])
@@ -369,9 +372,37 @@ def main() -> None:
         for entry in english_entries:
             candidates.append(candidate_from_entry(upstream, entry, current_index, current_inventory))
 
-    selected, duplicates = select_candidates(candidates)
-    write_catalog(selected, duplicates)
-    print(f"Published {len(selected)} unique English/multilingual Aidoku sources")
+    active_candidates = [
+        candidate for candidate in candidates if candidate["repository"] == ACTIVE_REPOSITORY
+    ]
+    active_selected, active_duplicates = select_candidates(active_candidates)
+    all_selected, all_duplicates = select_candidates(candidates)
+
+    active_upstreams = tuple(
+        upstream for upstream in UPSTREAMS if upstream["name"] == ACTIVE_REPOSITORY
+    )
+    write_catalog(
+        active_selected,
+        active_duplicates,
+        ROOT,
+        "Nixzle's Maintained English Aidoku Sources",
+        "Nixzle's Maintained Public English Aidoku Sources",
+        "Packages currently published by the active Aidoku community repository",
+        active_upstreams,
+    )
+    write_catalog(
+        all_selected,
+        all_duplicates,
+        ROOT / "legacy",
+        "Nixzle's Legacy English Aidoku Sources",
+        "Nixzle's Legacy Public English Aidoku Sources",
+        "Active packages plus older, unmaintained packages that may no longer work",
+        UPSTREAMS,
+    )
+    print(
+        f"Published {len(active_selected)} maintained sources and "
+        f"{len(all_selected)} sources in the legacy catalog"
+    )
 
 
 if __name__ == "__main__":
