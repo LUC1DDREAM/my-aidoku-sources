@@ -1,7 +1,7 @@
 {
   "name": "Nixzle's Legacy Public English Aidoku Sources",
-  "generatedAt": "2026-08-05T16:12:13+00:00",
-  "sourceCount": 105,
+  "generatedAt": "2026-08-07T15:09:41+00:00",
+  "sourceCount": 106,
   "catalogPolicy": "Active packages plus older, unmaintained packages that may no longer work",
   "languagePolicy": "English or multilingual entries advertising en, All, or multi",
   "excludedPersonalUseOnly": [
@@ -259,6 +259,15 @@
       "repository": "tachibana-shin/aidoku-community-sources",
       "license": "MIT OR Apache-2.0",
       "sha256": "623276871a8194b7a766535c8af7c99a8d9bc9184665a8120cec73c2dc00965c"
+    },
+    {
+      "id": "en.hennoveltranslations",
+      "name": "Hennoveltranslations",
+      "version": 1,
+      "file": "sources/en.hennoveltranslations-v1.aix",
+      "repository": "Aidoku-Community/sources",
+      "license": "MIT OR Apache-2.0",
+      "sha256": "c4d624122957079f55c32702f9e4590d025b38ab9f94f158b2dfa4e51ff8e94f"
     },
     {
       "id": "en.hentai2read",
@@ -618,7 +627,7 @@
       "file": "sources/en.readcomiconline-v2.aix",
       "repository": "Aidoku-Community/sources",
       "license": "MIT OR Apache-2.0",
-      "sha256": "696bda3608ed5e99dde9a17e27804d9b084e8e001e33074780d23122a775465e"
+      "sha256": "e49dae8f4895205ab4cbb00155af4734e71b917cd677c89908dc7ce99d6619f7"
     },
     {
       "id": "en.readcomicsbook",

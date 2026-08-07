@@ -312,6 +312,18 @@
       "baseURL": "https://harimanga.me"
     },
     {
+      "id": "en.hennoveltranslations",
+      "name": "Hennoveltranslations",
+      "version": 1,
+      "iconURL": "icons/en.hennoveltranslations-v1.png",
+      "downloadURL": "sources/en.hennoveltranslations-v1.aix",
+      "languages": [
+        "en"
+      ],
+      "contentRating": 0,
+      "baseURL": "https://hennoveltranslations.com"
+    },
+    {
       "id": "en.hentai2read",
       "name": "Hentai2Read",
       "version": 2,

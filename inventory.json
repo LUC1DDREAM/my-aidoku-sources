@@ -1,7 +1,7 @@
 {
   "name": "Nixzle's Maintained Public English Aidoku Sources",
-  "generatedAt": "2026-08-05T16:12:13+00:00",
-  "sourceCount": 55,
+  "generatedAt": "2026-08-07T15:09:41+00:00",
+  "sourceCount": 56,
   "catalogPolicy": "Packages currently published by the active Aidoku community repository",
   "languagePolicy": "English or multilingual entries advertising en, All, or multi",
   "excludedPersonalUseOnly": [
@@ -150,6 +150,15 @@
       "repository": "Aidoku-Community/sources",
       "license": "MIT OR Apache-2.0",
       "sha256": "a243f9a1e5c077eec094dd23650871d868e597be477a4a03d08d31b1c267ef57"
+    },
+    {
+      "id": "en.hennoveltranslations",
+      "name": "Hennoveltranslations",
+      "version": 1,
+      "file": "sources/en.hennoveltranslations-v1.aix",
+      "repository": "Aidoku-Community/sources",
+      "license": "MIT OR Apache-2.0",
+      "sha256": "c4d624122957079f55c32702f9e4590d025b38ab9f94f158b2dfa4e51ff8e94f"
     },
     {
       "id": "en.hivescans",
