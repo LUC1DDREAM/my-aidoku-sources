@@ -1,6 +1,6 @@
 {
   "name": "Nixzle's Maintained Public English Aidoku Sources",
-  "generatedAt": "2026-08-07T15:09:41+00:00",
+  "generatedAt": "2026-08-08T14:50:31+00:00",
   "sourceCount": 56,
   "catalogPolicy": "Packages currently published by the active Aidoku community repository",
   "languagePolicy": "English or multilingual entries advertising en, All, or multi",
@@ -388,11 +388,11 @@
     {
       "id": "en.vortexscans",
       "name": "Vortex Scans",
-      "version": 1,
-      "file": "sources/en.vortexscans-v1.aix",
+      "version": 2,
+      "file": "sources/en.vortexscans-v2.aix",
       "repository": "Aidoku-Community/sources",
       "license": "MIT OR Apache-2.0",
-      "sha256": "2a0317fd690a40f5b85b790979bf392f1a1c84adec7cf747109c62a0c96c3dfd"
+      "sha256": "03385473e82bb0dbf56c782f089ae9e7f5863f14837553d4bd0f9ac301fe9959"
     },
     {
       "id": "en.webtoonxyz",
