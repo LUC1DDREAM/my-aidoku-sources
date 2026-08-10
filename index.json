@@ -758,9 +758,9 @@
     {
       "id": "multi.mangaplus",
       "name": "MANGA Plus",
-      "version": 5,
-      "iconURL": "icons/multi.mangaplus-v5.png",
-      "downloadURL": "sources/multi.mangaplus-v5.aix",
+      "version": 6,
+      "iconURL": "icons/multi.mangaplus-v6.png",
+      "downloadURL": "sources/multi.mangaplus-v6.aix",
       "languages": [
         "en",
         "es",

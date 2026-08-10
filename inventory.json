@@ -1,6 +1,6 @@
 {
   "name": "Nixzle's Maintained Public English Aidoku Sources",
-  "generatedAt": "2026-08-09T14:53:36+00:00",
+  "generatedAt": "2026-08-10T15:17:57+00:00",
   "sourceCount": 56,
   "catalogPolicy": "Packages currently published by the active Aidoku community repository",
   "languagePolicy": "English or multilingual entries advertising en, All, or multi",
@@ -496,11 +496,11 @@
     {
       "id": "multi.mangaplus",
       "name": "MANGA Plus",
-      "version": 5,
-      "file": "sources/multi.mangaplus-v5.aix",
+      "version": 6,
+      "file": "sources/multi.mangaplus-v6.aix",
       "repository": "Aidoku-Community/sources",
       "license": "MIT OR Apache-2.0",
-      "sha256": "61e3330cc06fb448482d57299417472136fb75867fcf316812d6cd9eed89976e"
+      "sha256": "27fc0e044fe88515e6e147ba1c3e8f73063ea4a726c2287466b3da57aa5e0433"
     },
     {
       "id": "multi.myreadingmanga",
