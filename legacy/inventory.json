@@ -1,6 +1,6 @@
 {
   "name": "Nixzle's Legacy Public English Aidoku Sources",
-  "generatedAt": "2026-08-11T15:17:00+00:00",
+  "generatedAt": "2026-08-12T15:15:24+00:00",
   "sourceCount": 106,
   "catalogPolicy": "Active packages plus older, unmaintained packages that may no longer work",
   "languagePolicy": "English or multilingual entries advertising en, All, or multi",
@@ -627,7 +627,7 @@
       "file": "sources/en.readcomiconline-v2.aix",
       "repository": "Aidoku-Community/sources",
       "license": "MIT OR Apache-2.0",
-      "sha256": "1083a69a3c6e08f2239d7ef14e51c067c63eeea5f8c79068820af9df48ff15a8"
+      "sha256": "2a8b1aa35f3ab781de744b640eb491c391f9e4389b740ea83f8728a4a9707551"
     },
     {
       "id": "en.readcomicsbook",
