@@ -1,8 +1,8 @@
 {
   "name": "Nixzle's Maintained Public English Aidoku Sources",
-  "generatedAt": "2026-08-12T15:15:24+00:00",
-  "sourceCount": 56,
-  "catalogPolicy": "Packages currently published by the active Aidoku community repository",
+  "generatedAt": "2026-08-13T03:06:11+00:00",
+  "sourceCount": 53,
+  "catalogPolicy": "Packages currently published by the active Aidoku community repository and not quarantined",
   "languagePolicy": "English or multilingual entries advertising en, All, or multi",
   "excludedPersonalUseOnly": [
     "en.atsumaru",
@@ -25,15 +25,6 @@
   ],
   "excludedDuplicates": [],
   "sources": [
-    {
-      "id": "en.aquamanga",
-      "name": "Aqua Manga",
-      "version": 2,
-      "file": "sources/en.aquamanga-v2.aix",
-      "repository": "Aidoku-Community/sources",
-      "license": "MIT OR Apache-2.0",
-      "sha256": "44825f713bdd61608285d5860a28604d752693e46087843ca9a2a2ac8f731a15"
-    },
     {
       "id": "en.armageddon",
       "name": "Armageddon",
@@ -114,15 +105,6 @@
       "repository": "Aidoku-Community/sources",
       "license": "MIT OR Apache-2.0",
       "sha256": "7036eba0735cafe7fed47bfcafcb260df51199fbc86a7c24baf621fdc7e50868"
-    },
-    {
-      "id": "en.firescans",
-      "name": "Fire Scans",
-      "version": 2,
-      "file": "sources/en.firescans-v2.aix",
-      "repository": "Aidoku-Community/sources",
-      "license": "MIT OR Apache-2.0",
-      "sha256": "128e0078c7ca8fd23c8c5275b3d26032ebbec3aeaad8003c10ec18d7324bc4aa"
     },
     {
       "id": "en.flamecomics",
@@ -226,11 +208,11 @@
     {
       "id": "en.mangakakalot",
       "name": "MangaKakalot",
-      "version": 4,
-      "file": "sources/en.mangakakalot-v4.aix",
+      "version": 5,
+      "file": "sources/en.mangakakalot-v5.aix",
       "repository": "Aidoku-Community/sources",
       "license": "MIT OR Apache-2.0",
-      "sha256": "a1ff965ab7664c11cbda6e8b7198b891059c606a15942eaf77ce404077fb20af"
+      "sha256": "953bb18eca6b0b479d0356a1fdd2fbb3473fb998300f61c62a2e503ccd29afc7"
     },
     {
       "id": "en.manganato",
@@ -321,15 +303,6 @@
       "repository": "Aidoku-Community/sources",
       "license": "MIT OR Apache-2.0",
       "sha256": "19311e4ed532ded6a64452e22bdc39b3e65234a3824e020c038c6a62e5b69bf9"
-    },
-    {
-      "id": "en.qiscans",
-      "name": "Qi Scans",
-      "version": 2,
-      "file": "sources/en.qiscans-v2.aix",
-      "repository": "Aidoku-Community/sources",
-      "license": "MIT OR Apache-2.0",
-      "sha256": "d16b41b28173b786c78c1c33bcec1c252d385065349f598eb5131c1cd4f15586"
     },
     {
       "id": "en.readcomicsonline",

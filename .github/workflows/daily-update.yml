@@ -1,18 +1,15 @@
 name: Daily source update
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - "scripts/update_sources.py"
-      - ".github/workflows/daily-update.yml"
   schedule:
     - cron: "17 14 * * *"
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
+
+env:
+  PYTHONDONTWRITEBYTECODE: "1"
 
 concurrency:
   group: daily-source-update
@@ -21,22 +18,63 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
+    permissions:
+      contents: write
     steps:
       - name: Check out repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.13"
+          check-latest: false
+
+      - name: Run updater unit tests
+        run: python -m unittest discover -s tests -p "test_*.py"
 
       - name: Refresh and validate sources
         run: python3 scripts/update_sources.py
 
-      - name: Commit refreshed catalog
+      - name: Validate generated catalogs and packages
         run: |
+          python scripts/validate_catalog.py
+          git diff --check
+
+      - name: Commit refreshed catalog
+        shell: bash
+        run: |
+          set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add .nojekyll CHECKSUMS.sha256 README.md icons index.json index.min.json inventory.json legacy scripts sources
+          git add -A -- \
+            .nojekyll \
+            CHECKSUMS.sha256 \
+            README.md \
+            config/source_health.json \
+            icons \
+            index.json \
+            index.min.json \
+            inventory.json \
+            legacy \
+            sources
+
+          if ! git diff --quiet || [[ -n "$(git ls-files --others --exclude-standard)" ]]; then
+            echo "::error::The updater changed files outside the approved generated paths."
+            git status --short
+            exit 1
+          fi
+
           if git diff --cached --quiet; then
             echo "No catalog changes."
           else
             git commit -m "chore: daily source update"
-            git push
+            git fetch origin main
+            git rebase origin/main
+            python scripts/validate_catalog.py
+            git push origin HEAD:main
           fi

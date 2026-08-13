@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "sources": {
+    "en.manhuagold": {
+      "status": "failing",
+      "consecutiveFailures": 1,
+      "consecutiveSuccesses": 0,
+      "lastObservationDate": "2026-08-13"
+    },
+    "en.mangasect": {
+      "status": "failing",
+      "consecutiveFailures": 1,
+      "consecutiveSuccesses": 0,
+      "lastObservationDate": "2026-08-13"
+    },
+    "en.manhwax": {
+      "status": "failing",
+      "consecutiveFailures": 1,
+      "consecutiveSuccesses": 0,
+      "lastObservationDate": "2026-08-13"
+    },
+    "en.armageddon": {
+      "status": "failing",
+      "consecutiveFailures": 1,
+      "consecutiveSuccesses": 0,
+      "lastObservationDate": "2026-08-13"
+    }
+  }
+}

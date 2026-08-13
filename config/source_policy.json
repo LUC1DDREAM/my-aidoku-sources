@@ -1,0 +1,54 @@
+{
+  "quarantinedSources": {
+    "en.aquamanga": {
+      "catalogs": [
+        "maintained",
+        "legacy"
+      ],
+      "reason": "The site/parser changed and the source needs a rewrite before it is installable again.",
+      "issue": "https://github.com/Aidoku-Community/sources/issues/605"
+    },
+    "en.firescans": {
+      "catalogs": [
+        "maintained",
+        "legacy"
+      ],
+      "reason": "The configured source domain does not currently resolve."
+    },
+    "en.qiscans": {
+      "catalogs": [
+        "maintained",
+        "legacy"
+      ],
+      "reason": "The configured source domain does not currently resolve."
+    },
+    "en.readcomiconline": {
+      "catalogs": [
+        "maintained",
+        "legacy"
+      ],
+      "reason": "The original ReadComicOnline service has no live domain; use en.readcomicsonline instead.",
+      "issue": "https://github.com/Aidoku-Community/sources/issues/639"
+    }
+  },
+  "minAppVersionOverrides": {
+    "en.readcomicsonline": "0.8.4"
+  },
+  "requiredMaintainedSources": [
+    "en.comix",
+    "en.mangadistrict",
+    "en.readcomicsonline"
+  ],
+  "automaticHealth": {
+    "enabled": true,
+    "failureThreshold": 3,
+    "recoveryThreshold": 2,
+    "probeAttempts": 2,
+    "minimumConclusiveSuccessRatio": 0.5
+  },
+  "safety": {
+    "minimumMaintainedSources": 40,
+    "minimumLegacySources": 20,
+    "maximumRemovalRatio": 0.25
+  }
+}
