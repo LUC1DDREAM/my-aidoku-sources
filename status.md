@@ -1,6 +1,6 @@
 # Aidoku Source Status
 
-Status last changed: 2026-08-13T03:28:53+00:00
+Status last changed: 2026-08-14T15:08:22+00:00
 
 Checks run daily; this timestamp changes only when catalog or health status changes.
 
@@ -8,7 +8,7 @@ Checks run daily; this timestamp changes only when catalog or health status chan
 - Legacy-only: 49
 - Manually quarantined: 4
 - Automatically quarantined: 0
-- Degraded/under observation: 4
+- Degraded/under observation: 3
 
 ## Quarantined
 
@@ -19,7 +19,6 @@ Checks run daily; this timestamp changes only when catalog or health status chan
 
 ## Under observation
 
-- **Armageddon** (`en.armageddon`): 1 consecutive failed check(s), last observed 2026-08-13
-- **Manga Sect** (`en.mangasect`): 1 consecutive failed check(s), last observed 2026-08-13
-- **Manhuagold** (`en.manhuagold`): 1 consecutive failed check(s), last observed 2026-08-13
-- **Manhwax** (`en.manhwax`): 1 consecutive failed check(s), last observed 2026-08-13
+- **Manga Sect** (`en.mangasect`): 2 consecutive failed check(s), last observed 2026-08-14
+- **Manhuagold** (`en.manhuagold`): 2 consecutive failed check(s), last observed 2026-08-14
+- **Manhwax** (`en.manhwax`): 2 consecutive failed check(s), last observed 2026-08-14

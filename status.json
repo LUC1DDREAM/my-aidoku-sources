@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-08-13T03:28:53+00:00",
+  "generatedAt": "2026-08-14T15:08:22+00:00",
   "summary": {
     "maintained": 53,
     "legacyOnly": 49,
     "manualQuarantined": 4,
     "automaticQuarantined": 0,
-    "degraded": 4
+    "degraded": 3
   },
   "requiredMaintainedSources": [
     "en.comix",
@@ -59,23 +59,13 @@
   "automaticQuarantine": [],
   "degraded": [
     {
-      "id": "en.armageddon",
-      "name": "Armageddon",
-      "baseURL": "https://www.silentquill.net",
-      "status": "failing",
-      "consecutiveFailures": 1,
-      "consecutiveSuccesses": 0,
-      "lastObservationDate": "2026-08-13",
-      "required": false
-    },
-    {
       "id": "en.mangasect",
       "name": "Manga Sect",
       "baseURL": "https://mangasect.net",
       "status": "failing",
-      "consecutiveFailures": 1,
+      "consecutiveFailures": 2,
       "consecutiveSuccesses": 0,
-      "lastObservationDate": "2026-08-13",
+      "lastObservationDate": "2026-08-14",
       "required": false
     },
     {
@@ -83,9 +73,9 @@
       "name": "Manhuagold",
       "baseURL": "https://manhuagold.top",
       "status": "failing",
-      "consecutiveFailures": 1,
+      "consecutiveFailures": 2,
       "consecutiveSuccesses": 0,
-      "lastObservationDate": "2026-08-13",
+      "lastObservationDate": "2026-08-14",
       "required": false
     },
     {
@@ -93,9 +83,9 @@
       "name": "Manhwax",
       "baseURL": "https://manhwax.top",
       "status": "failing",
-      "consecutiveFailures": 1,
+      "consecutiveFailures": 2,
       "consecutiveSuccesses": 0,
-      "lastObservationDate": "2026-08-13",
+      "lastObservationDate": "2026-08-14",
       "required": false
     }
   ]
