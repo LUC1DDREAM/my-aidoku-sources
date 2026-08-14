@@ -38,6 +38,12 @@
   "minAppVersionOverrides": {
     "en.readcomicsonline": "0.8.4"
   },
+  "localPackageOverrides": {
+    "en.readcomicsonline": {
+      "path": "overrides/en.readcomicsonline-v3.aix",
+      "provenanceURL": "https://github.com/Nixzle/aidoku-sources/blob/main/overrides/en.readcomicsonline-v3.aix"
+    }
+  },
   "requiredMaintainedSources": [
     "en.comix",
     "en.mangadistrict",
