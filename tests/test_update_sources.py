@@ -308,6 +308,62 @@ class HealthStateTests(unittest.TestCase):
 
 
 class SelectionAndDeterminismTests(unittest.TestCase):
+    def test_local_override_replaces_older_active_package(self):
+        upstream = next(
+            item for item in updater.UPSTREAMS if item["name"] == updater.ACTIVE_REPOSITORY
+        )
+        original_package = make_aix("en.example", 2)
+        original = updater.candidate_from_package(
+            upstream,
+            {"id": "en.example"},
+            original_package,
+            expected_version=2,
+            min_app_version_overrides={},
+            upstream_package_url="https://assets.example/en.example-v2.aix",
+        )
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "overrides").mkdir()
+            (root / "overrides" / "en.example-v3.aix").write_bytes(make_aix("en.example", 3))
+            policy = {
+                "localPackageOverrides": {
+                    "en.example": {
+                        "path": "overrides/en.example-v3.aix",
+                        "provenanceURL": "https://example.com/en.example-v3.aix",
+                    }
+                }
+            }
+            result = updater.apply_local_package_overrides([original], policy, root=root)
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]["version"], 3)
+        self.assertEqual(result[0]["repository"], updater.ACTIVE_REPOSITORY)
+
+    def test_local_override_rejects_non_newer_version(self):
+        upstream = next(
+            item for item in updater.UPSTREAMS if item["name"] == updater.ACTIVE_REPOSITORY
+        )
+        original = updater.candidate_from_package(
+            upstream,
+            {"id": "en.example"},
+            make_aix("en.example", 3),
+            expected_version=3,
+            min_app_version_overrides={},
+        )
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "overrides").mkdir()
+            (root / "overrides" / "en.example-v3.aix").write_bytes(make_aix("en.example", 3))
+            policy = {
+                "localPackageOverrides": {
+                    "en.example": {
+                        "path": "overrides/en.example-v3.aix",
+                        "provenanceURL": "https://example.com/en.example-v3.aix",
+                    }
+                }
+            }
+            with self.assertRaisesRegex(ValueError, "must be newer"):
+                updater.apply_local_package_overrides([original], policy, root=root)
+
     def test_legacy_delta_excludes_maintained_ids(self):
         selected = [
             {"id": "en.active"},

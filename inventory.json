@@ -1,6 +1,6 @@
 {
   "name": "Nixzle's Maintained Public English Aidoku Sources",
-  "generatedAt": "2026-08-13T03:28:53+00:00",
+  "generatedAt": "2026-08-14T15:46:28+00:00",
   "sourceCount": 53,
   "catalogPolicy": "Packages currently published by the active Aidoku community repository and not quarantined",
   "languagePolicy": "English or multilingual entries advertising en, All, or multi",
@@ -338,12 +338,12 @@
     {
       "id": "en.readcomicsonline",
       "name": "Read Comics Online",
-      "version": 2,
-      "file": "sources/en.readcomicsonline-v2.aix",
+      "version": 3,
+      "file": "sources/en.readcomicsonline-v3.aix",
       "repository": "Aidoku-Community/sources",
       "license": "MIT OR Apache-2.0",
-      "upstreamPackageURL": "https://aidoku-community.github.io/sources/sources/en.readcomicsonline-v2.aix",
-      "sha256": "581bc2a452cda96cd60050994bbb2f45a9bc82fd0d2f15cc5c414eb9adce2449"
+      "upstreamPackageURL": "https://github.com/Nixzle/aidoku-sources/blob/main/overrides/en.readcomicsonline-v3.aix",
+      "sha256": "99983f0a4a8e4d6d1c17357ad77ef42082b6b9f99b11046337be2af1b7af5126"
     },
     {
       "id": "en.rizzfables",

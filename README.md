@@ -8,7 +8,7 @@ Paste this URL into Aidoku under Settings > Source Lists:
 
 `https://nixzle.github.io/aidoku-sources/index.min.json`
 
-The normal list contains the currently maintained packages that are not known to be broken. Comix and Read Comics Online use maintained builds and require Aidoku 0.8.4 or newer.
+The normal list contains the currently maintained packages that are not known to be broken. Comix and Read Comics Online use maintained builds and require Aidoku 0.8.4 or newer. The source-list host is static GitHub Pages and normally responds in well under a second; browsing speed after installation depends on each source website.
 
 ### Reliability
 
@@ -22,7 +22,9 @@ Current degraded and quarantined sources are listed in the [public status report
 
 The original ReadComicOnline websites no longer resolve, so that broken entry is hidden from the maintained list. Install **Read Comics Online** (with spaces) instead. It is a separate website, so bookmarks from the original source do not migrate automatically.
 
-If Read Comics Online gets stuck on Cloudflare verification, update Aidoku to 0.8.4 or newer, clear the network cache under Aidoku's Advanced settings, and retry. **BatCave** is included as a second comics fallback; open its source settings and use **Verify BatCave Access** if it fails to load.
+Read Comics Online v3 reuses the Cloudflare clearance obtained through **Source Settings > Verify Read Comics Online Access**. Complete the check once and return to Browse; repeat it only when the website expires the clearance. If it remains stuck, update Aidoku to 0.8.4 or newer, clear the network cache under Aidoku's Advanced settings, and retry.
+
+Comix already reuses its verification cookie, but Comix itself currently gives that cookie a short lifetime (about 30 minutes). Use **Source Settings > Verify Comix Captcha** when it expires. That limit is controlled by Comix and cannot be extended by this catalog host. **BatCave** is included as a second comics fallback; open its source settings and use **Verify BatCave Access** if it fails to load.
 
 Older packages that are no longer present in the maintained catalog are preserved in a separate legacy list. It is an archive, not a recommended list, and many entries no longer work because their websites or parsers changed:
 

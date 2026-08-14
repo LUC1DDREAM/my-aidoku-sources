@@ -454,6 +454,44 @@ def validate_policy(root: Path, maintained_ids: set[str], legacy_ids: set[str]) 
         "required maintained sources are missing: " + ", ".join(sorted(missing_required)),
     )
 
+    local_overrides = policy.get("localPackageOverrides", {})
+    require(isinstance(local_overrides, dict), "source policy localPackageOverrides must be an object")
+    maintained_entries = {
+        entry.get("id"): entry
+        for entry in load_json(root / "index.json").get("sources", [])
+        if isinstance(entry, dict)
+    }
+    for source_id, details in local_overrides.items():
+        require(
+            isinstance(source_id, str) and SOURCE_ID_PATTERN.fullmatch(source_id) is not None,
+            f"source policy contains an invalid local override id {source_id!r}",
+        )
+        require(isinstance(details, dict), f"local override for {source_id} must be an object")
+        require(source_id in maintained_entries, f"local override {source_id} is not maintained")
+        override_relative = safe_relative_path(
+            details.get("path"), f"local override path for {source_id}", "overrides"
+        )
+        provenance = details.get("provenanceURL")
+        parsed_provenance = urlsplit(provenance) if isinstance(provenance, str) else None
+        require(
+            parsed_provenance is not None
+            and parsed_provenance.scheme == "https"
+            and bool(parsed_provenance.hostname),
+            f"local override provenance for {source_id} is unsafe",
+        )
+        entry = maintained_entries[source_id]
+        override_path = root.joinpath(*override_relative.parts)
+        override_digest = validate_aix(override_path, entry, f"local override {source_id}")
+        published_relative = safe_relative_path(
+            entry.get("downloadURL"), f"published package for {source_id}", "sources"
+        )
+        published_path = root.joinpath(*published_relative.parts)
+        published_digest = hashlib.sha256(published_path.read_bytes()).hexdigest()
+        require(
+            override_digest == published_digest,
+            f"local override {source_id} does not match its published package",
+        )
+
     safety = policy.get("safety")
     require(isinstance(safety, dict), "source policy safety must be an object")
     minimum_maintained = safety.get("minimumMaintainedSources")

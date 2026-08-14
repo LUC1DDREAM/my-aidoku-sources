@@ -638,6 +638,87 @@ def select_candidates(candidates: list[dict]) -> tuple[list[dict], list[dict]]:
     return sorted(selected_by_site.values(), key=lambda item: item["id"]), duplicates
 
 
+def apply_local_package_overrides(
+    candidates: list[dict],
+    policy: dict,
+    *,
+    root: Path = ROOT,
+) -> list[dict]:
+    """Replace active-upstream packages with reviewed, repository-pinned fixes.
+
+    Overrides remain explicit policy rather than an invisible preference. The
+    package must have a newer version than the active upstream package, and it
+    is subjected to the same manifest/archive validation as downloaded AIX
+    files. This lets a compatibility fix survive the nightly mirror refresh.
+    """
+    overrides = policy.get("localPackageOverrides", {})
+    if not overrides:
+        return candidates
+    active_upstream = next(
+        upstream for upstream in UPSTREAMS if upstream["name"] == ACTIVE_REPOSITORY
+    )
+    result = list(candidates)
+    for source_id, detail in sorted(overrides.items()):
+        path = _safe_local_reference(root, str(detail["path"]))
+        override_root = (root / "overrides").resolve()
+        if override_root not in path.parents or path.suffix.casefold() != ".aix":
+            raise ValueError(f"Local override for {source_id} must be an .aix inside overrides/")
+        package = path.read_bytes()
+        if len(package) > MAX_PACKAGE_BYTES:
+            raise ValueError(f"Local override for {source_id} exceeds the package size limit")
+        info, _ = read_package(package, f"local override {source_id}", expected_id=source_id)
+        try:
+            version = int(info["version"])
+        except (KeyError, TypeError, ValueError) as error:
+            raise ValueError(f"Local override for {source_id} has no valid version") from error
+        active_matches = [
+            candidate
+            for candidate in result
+            if candidate["id"] == source_id and candidate["repository"] == ACTIVE_REPOSITORY
+        ]
+        if not active_matches:
+            raise ValueError(f"Local override source {source_id} is absent from the active upstream")
+        upstream_version = max(candidate["version"] for candidate in active_matches)
+        if version <= upstream_version:
+            raise ValueError(
+                f"Local override {source_id} v{version} must be newer than upstream v{upstream_version}"
+            )
+        entry = {
+            "id": source_id,
+            "name": info.get("name"),
+            "version": version,
+            "languages": info.get("languages", info.get("lang")),
+            "contentRating": info.get("contentRating", info.get("nsfw")),
+            "baseURL": info.get("url"),
+            "minAppVersion": info.get("minAppVersion"),
+        }
+        override = candidate_from_package(
+            active_upstream,
+            entry,
+            package,
+            expected_version=version,
+            min_app_version_overrides={
+                str(key): str(value)
+                for key, value in policy.get("minAppVersionOverrides", {}).items()
+            },
+            upstream_package_url=str(detail["provenanceURL"]),
+        )
+        result = [
+            candidate
+            for candidate in result
+            if not (
+                candidate["id"] == source_id
+                and candidate["repository"] == ACTIVE_REPOSITORY
+            )
+        ]
+        result.append(override)
+        print(
+            f"Applied reviewed local override {source_id} v{version} "
+            f"over active upstream v{upstream_version}"
+        )
+    return result
+
+
 def load_policy(path: Path = POLICY_PATH) -> dict:
     try:
         policy = json.loads(path.read_text(encoding="utf-8-sig"))
@@ -671,6 +752,18 @@ def load_policy(path: Path = POLICY_PATH) -> dict:
         validate_source_id(source_id, "minimum-version override source ID")
         if not APP_VERSION_RE.fullmatch(str(version)):
             raise ValueError(f"Invalid minimum-version override for {source_id}")
+    package_overrides = policy.get("localPackageOverrides", {})
+    if not isinstance(package_overrides, dict):
+        raise ValueError("localPackageOverrides must be an object")
+    for source_id, detail in package_overrides.items():
+        validate_source_id(source_id, "local package override source ID")
+        if not isinstance(detail, dict):
+            raise ValueError(f"Local package override for {source_id} must be an object")
+        path = detail.get("path")
+        if not isinstance(path, str) or not path.startswith("overrides/") or len(path) > 300:
+            raise ValueError(f"Local package override for {source_id} has an invalid path")
+        provenance_url = detail.get("provenanceURL")
+        _safe_https_url(str(provenance_url), f"local package override provenance for {source_id}")
     return policy
 
 
@@ -1242,6 +1335,8 @@ def main() -> None:
                 print(f"WARNING: skipping invalid source {message}")
     if errors:
         print(f"WARNING: {len(errors)} source package(s) could not be refreshed or recovered")
+
+    candidates = apply_local_package_overrides(candidates, policy)
 
     required_maintained = set(policy.get("requiredMaintainedSources", []))
     active_health_candidates = [
