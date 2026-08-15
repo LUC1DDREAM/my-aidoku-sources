@@ -299,18 +299,6 @@
       "baseURL": "https://www.mangaread.org"
     },
     {
-      "id": "en.mangasect",
-      "name": "Manga Sect",
-      "version": 1,
-      "iconURL": "icons/en.mangasect-v1.png",
-      "downloadURL": "sources/en.mangasect-v1.aix",
-      "languages": [
-        "en"
-      ],
-      "contentRating": 1,
-      "baseURL": "https://mangasect.net"
-    },
-    {
       "id": "en.mangatx",
       "name": "MangaTx",
       "version": 10,
@@ -323,18 +311,6 @@
       "baseURL": "https://mangatx.cc"
     },
     {
-      "id": "en.manhuagold",
-      "name": "Manhuagold",
-      "version": 1,
-      "iconURL": "icons/en.manhuagold-v1.png",
-      "downloadURL": "sources/en.manhuagold-v1.aix",
-      "languages": [
-        "en"
-      ],
-      "contentRating": 1,
-      "baseURL": "https://manhuagold.top"
-    },
-    {
       "id": "en.manhuaplusorg",
       "name": "Manhuaplus.org",
       "version": 1,
@@ -345,18 +321,6 @@
       ],
       "contentRating": 1,
       "baseURL": "https://manhuaplus.org"
-    },
-    {
-      "id": "en.manhwax",
-      "name": "Manhwax",
-      "version": 5,
-      "iconURL": "icons/en.manhwax-v5.png",
-      "downloadURL": "sources/en.manhwax-v5.aix",
-      "languages": [
-        "en"
-      ],
-      "contentRating": 2,
-      "baseURL": "https://manhwax.top"
     },
     {
       "id": "en.novelbuddy",

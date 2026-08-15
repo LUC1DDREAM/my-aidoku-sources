@@ -1,7 +1,7 @@
 {
   "name": "Nixzle's Maintained Public English Aidoku Sources",
-  "generatedAt": "2026-08-14T15:46:28+00:00",
-  "sourceCount": 53,
+  "generatedAt": "2026-08-15T14:40:57+00:00",
+  "sourceCount": 50,
   "catalogPolicy": "Packages currently published by the active Aidoku community repository and not quarantined",
   "languagePolicy": "English or multilingual entries advertising en, All, or multi",
   "excludedPersonalUseOnly": [
@@ -266,16 +266,6 @@
       "sha256": "7b10de627e03eef862485d0dde9e1b1ccf4f76c28a1f571f0a1106fcdf890adf"
     },
     {
-      "id": "en.mangasect",
-      "name": "Manga Sect",
-      "version": 1,
-      "file": "sources/en.mangasect-v1.aix",
-      "repository": "Aidoku-Community/sources",
-      "license": "MIT OR Apache-2.0",
-      "upstreamPackageURL": "https://aidoku-community.github.io/sources/sources/en.mangasect-v1.aix",
-      "sha256": "3cef5a5ecc5b7bbdc383599afe98f1def5e879e5991666164cf5b400bcc26cb9"
-    },
-    {
       "id": "en.mangatx",
       "name": "MangaTx",
       "version": 10,
@@ -286,16 +276,6 @@
       "sha256": "d9089dad677c88cd66585a7459c4a1c1a5584cac33d50c5f30c47ada73d08528"
     },
     {
-      "id": "en.manhuagold",
-      "name": "Manhuagold",
-      "version": 1,
-      "file": "sources/en.manhuagold-v1.aix",
-      "repository": "Aidoku-Community/sources",
-      "license": "MIT OR Apache-2.0",
-      "upstreamPackageURL": "https://aidoku-community.github.io/sources/sources/en.manhuagold-v1.aix",
-      "sha256": "88a1d9ea281a915e512b12de62b900df1d3701ee0d787c1f92c2935d14b492f7"
-    },
-    {
       "id": "en.manhuaplusorg",
       "name": "Manhuaplus.org",
       "version": 1,
@@ -304,16 +284,6 @@
       "license": "MIT OR Apache-2.0",
       "upstreamPackageURL": "https://aidoku-community.github.io/sources/sources/en.manhuaplusorg-v1.aix",
       "sha256": "0e12e24d6b982f824f883ec0d8326f7732f9cc1b74366df9a10c33e94fe7c033"
-    },
-    {
-      "id": "en.manhwax",
-      "name": "Manhwax",
-      "version": 5,
-      "file": "sources/en.manhwax-v5.aix",
-      "repository": "Aidoku-Community/sources",
-      "license": "MIT OR Apache-2.0",
-      "upstreamPackageURL": "https://aidoku-community.github.io/sources/sources/en.manhwax-v5.aix",
-      "sha256": "d5d2db6fcfcd706b5e8e5e096e8a7900e783f8f844f0b9305117c3fcc58ee20b"
     },
     {
       "id": "en.novelbuddy",

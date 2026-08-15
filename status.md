@@ -1,14 +1,14 @@
 # Aidoku Source Status
 
-Status last changed: 2026-08-14T15:08:22+00:00
+Status last changed: 2026-08-15T14:40:58+00:00
 
 Checks run daily; this timestamp changes only when catalog or health status changes.
 
-- Maintained: 53
+- Maintained: 50
 - Legacy-only: 49
 - Manually quarantined: 4
-- Automatically quarantined: 0
-- Degraded/under observation: 3
+- Automatically quarantined: 3
+- Degraded/under observation: 0
 
 ## Quarantined
 
@@ -16,9 +16,10 @@ Checks run daily; this timestamp changes only when catalog or health status chan
 - **Fire Scans** (`en.firescans`): The configured source domain does not currently resolve.
 - **Qi Scans** (`en.qiscans`): The configured source domain does not currently resolve.
 - **ReadComicOnline** (`en.readcomiconline`): The original ReadComicOnline service has no live domain; use en.readcomicsonline instead. ([upstream issue](https://github.com/Aidoku-Community/sources/issues/639))
+- **Manga Sect** (`en.mangasect`): unreachable for 3 consecutive daily checks
+- **Manhuagold** (`en.manhuagold`): unreachable for 3 consecutive daily checks
+- **Manhwax** (`en.manhwax`): unreachable for 3 consecutive daily checks
 
 ## Under observation
 
-- **Manga Sect** (`en.mangasect`): 2 consecutive failed check(s), last observed 2026-08-14
-- **Manhuagold** (`en.manhuagold`): 2 consecutive failed check(s), last observed 2026-08-14
-- **Manhwax** (`en.manhwax`): 2 consecutive failed check(s), last observed 2026-08-14
+None.

@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-08-14T15:08:22+00:00",
+  "generatedAt": "2026-08-15T14:40:58+00:00",
   "summary": {
-    "maintained": 53,
+    "maintained": 50,
     "legacyOnly": 49,
     "manualQuarantined": 4,
-    "automaticQuarantined": 0,
-    "degraded": 3
+    "automaticQuarantined": 3,
+    "degraded": 0
   },
   "requiredMaintainedSources": [
     "en.comix",
@@ -56,37 +56,37 @@
       "issue": "https://github.com/Aidoku-Community/sources/issues/639"
     }
   ],
-  "automaticQuarantine": [],
-  "degraded": [
+  "automaticQuarantine": [
     {
       "id": "en.mangasect",
       "name": "Manga Sect",
       "baseURL": "https://mangasect.net",
-      "status": "failing",
-      "consecutiveFailures": 2,
+      "status": "quarantined",
+      "consecutiveFailures": 3,
       "consecutiveSuccesses": 0,
-      "lastObservationDate": "2026-08-14",
+      "lastObservationDate": "2026-08-15",
       "required": false
     },
     {
       "id": "en.manhuagold",
       "name": "Manhuagold",
       "baseURL": "https://manhuagold.top",
-      "status": "failing",
-      "consecutiveFailures": 2,
+      "status": "quarantined",
+      "consecutiveFailures": 3,
       "consecutiveSuccesses": 0,
-      "lastObservationDate": "2026-08-14",
+      "lastObservationDate": "2026-08-15",
       "required": false
     },
     {
       "id": "en.manhwax",
       "name": "Manhwax",
       "baseURL": "https://manhwax.top",
-      "status": "failing",
-      "consecutiveFailures": 2,
+      "status": "quarantined",
+      "consecutiveFailures": 3,
       "consecutiveSuccesses": 0,
-      "lastObservationDate": "2026-08-14",
+      "lastObservationDate": "2026-08-15",
       "required": false
     }
-  ]
+  ],
+  "degraded": []
 }

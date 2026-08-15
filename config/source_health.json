@@ -2,22 +2,22 @@
   "version": 1,
   "sources": {
     "en.mangasect": {
-      "status": "failing",
-      "consecutiveFailures": 2,
+      "status": "quarantined",
+      "consecutiveFailures": 3,
       "consecutiveSuccesses": 0,
-      "lastObservationDate": "2026-08-14"
+      "lastObservationDate": "2026-08-15"
     },
     "en.manhuagold": {
-      "status": "failing",
-      "consecutiveFailures": 2,
+      "status": "quarantined",
+      "consecutiveFailures": 3,
       "consecutiveSuccesses": 0,
-      "lastObservationDate": "2026-08-14"
+      "lastObservationDate": "2026-08-15"
     },
     "en.manhwax": {
-      "status": "failing",
-      "consecutiveFailures": 2,
+      "status": "quarantined",
+      "consecutiveFailures": 3,
       "consecutiveSuccesses": 0,
-      "lastObservationDate": "2026-08-14"
+      "lastObservationDate": "2026-08-15"
     }
   }
 }
