@@ -4,7 +4,7 @@ use aidoku::{
 	Home, HomeComponent, HomeComponentValue, HomeLayout, Link, Listing, ListingProvider, Manga,
 	MangaPageResult, MangaStatus, MangaWithChapter, MigrationHandler, NotificationHandler, Page,
 	PageContent, Result, Source, Viewer, WebLoginHandler,
-	alloc::{String, Vec, string::ToString, vec, boxed::Box},
+	alloc::{String, Vec, string::ToString, vec},
 	helpers::uri::QueryParameters,
 	imports::{
 		defaults::defaults_get,
@@ -298,6 +298,6 @@ impl Source for AsuraScans {
 }
 
 #[aidoku::main]
-fn get_source() -> Box<dyn Source> {
-	Box::new(AsuraScans)
+fn get_source() -> AsuraScans {
+	AsuraScans
 }
