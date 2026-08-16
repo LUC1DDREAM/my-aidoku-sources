@@ -44,8 +44,8 @@
       "provenanceURL": "https://github.com/Nixzle/aidoku-sources/blob/main/overrides/en.readcomicsonline-v3.aix"
     },
     "en.asurascans": {
-      "path": "overrides/en.asurascans-v20.aix",
-      "provenanceURL": "https://github.com/LUC1DDREAM/my-aidoku-sources/blob/main/overrides/en.asurascans-v20.aix"
+      "path": "overrides/en.asurascans-v21.aix",
+      "provenanceURL": "https://github.com/LUC1DDREAM/my-aidoku-sources/blob/main/overrides/en.asurascans-v21.aix"
     }
   },
   "requiredMaintainedSources": [
