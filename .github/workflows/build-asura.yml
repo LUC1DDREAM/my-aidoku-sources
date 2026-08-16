@@ -38,14 +38,14 @@ jobs:
           cp res/filters.json Payload/ 2>/dev/null || true
           cp res/settings.json Payload/ 2>/dev/null || true
           cp target/wasm32-unknown-unknown/release/*.wasm Payload/main.wasm
-          zip -q -r en.asurascans-v19.aix Payload/
-          unzip -l en.asurascans-v19.aix
+          zip -q -r en.asurascans-v20.aix Payload/
+          unzip -l en.asurascans-v20.aix
 
       - name: Move to overrides
         run: |
           mkdir -p overrides icons
-          mv src/en.asurascans/en.asurascans-v19.aix overrides/
-          cp src/en.asurascans/res/icon.png icons/en.asurascans-v19.png
+          mv src/en.asurascans/en.asurascans-v20.aix overrides/
+          cp src/en.asurascans/res/icon.png icons/en.asurascans-v20.png
 
       - name: Update source policy
         run: python3 scripts/update_asura_policy.py
@@ -62,7 +62,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
           if ! git diff --cached --quiet; then
-            git commit -m "feat: build Asura Scans v19 with crash fixes"
+            git commit -m "feat: build Asura Scans v20 with enhanced crash protection"
             git push origin main
           else
             echo "No changes to commit"

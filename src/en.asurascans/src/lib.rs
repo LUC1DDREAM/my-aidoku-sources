@@ -192,10 +192,26 @@ impl Source for AsuraScans {
 			}
 		
 			let island_props = island_result.unwrap();
-			let json = serde_json::from_str::<serde_json::Value>(&island_props)?;
-			let chapters_arr = json["chapters"][1]
-				.as_array()
-				.ok_or_else(|| error!("Missing chapters"))?;
+			let json_result = serde_json::from_str::<serde_json::Value>(&island_props);
+		
+			// If JSON parsing fails, return empty chapters
+			if json_result.is_err() {
+				manga.chapters = Some(Vec::new());
+				return Ok(manga);
+			}
+		
+			let json = json_result.unwrap();
+			let chapters_arr = json.get("chapters")
+				.and_then(|v| v.get(1))
+				.and_then(|v| v.as_array());
+		
+			// If chapters structure missing, return empty chapters
+			if chapters_arr.is_none() {
+				manga.chapters = Some(Vec::new());
+				return Ok(manga);
+			}
+		
+			let chapters_arr = chapters_arr.unwrap();
 
 			let skip_locked = !defaults_get::<bool>("showLocked").unwrap_or(true);
 			let is_subscribed = auth::is_subscribed();
@@ -301,11 +317,24 @@ impl Source for AsuraScans {
 		}
 	
 		let island_props = island_result.unwrap();
-		let json = serde_json::from_str::<serde_json::Value>(&island_props)?;
-
-		let page_arr = json["pages"][1]
-			.as_array()
-			.ok_or_else(|| error!("Missing pages"))?;
+		let json_result = serde_json::from_str::<serde_json::Value>(&island_props);
+	
+		// If JSON parsing fails, return empty pages
+		if json_result.is_err() {
+			return Ok(Vec::new());
+		}
+	
+		let json = json_result.unwrap();
+		let page_arr = json.get("pages")
+			.and_then(|v| v.get(1))
+			.and_then(|v| v.as_array());
+	
+		// If pages structure missing, return empty pages
+		if page_arr.is_none() {
+			return Ok(Vec::new());
+		}
+	
+		let page_arr = page_arr.unwrap();
 
 		Ok(page_arr
 			.iter()
