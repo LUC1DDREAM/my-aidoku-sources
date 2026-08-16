@@ -1,6 +1,6 @@
 {
   "name": "Nixzle's Maintained Public English Aidoku Sources",
-  "generatedAt": "2026-08-16T20:19:50+00:00",
+  "generatedAt": "2026-08-16T20:31:07+00:00",
   "sourceCount": 50,
   "catalogPolicy": "Packages currently published by the active Aidoku community repository and not quarantined",
   "languagePolicy": "English or multilingual entries advertising en, All, or multi",
@@ -38,12 +38,12 @@
     {
       "id": "en.asurascans",
       "name": "Asura Scans",
-      "version": 21,
-      "file": "sources/en.asurascans-v21.aix",
+      "version": 22,
+      "file": "sources/en.asurascans-v22.aix",
       "repository": "Aidoku-Community/sources",
       "license": "MIT OR Apache-2.0",
-      "upstreamPackageURL": "https://github.com/LUC1DDREAM/my-aidoku-sources/blob/main/overrides/en.asurascans-v21.aix",
-      "sha256": "61e9931cb436f8fc54752e340c61fb79feb450d3264f23577cb0af77e6886396"
+      "upstreamPackageURL": "https://github.com/LUC1DDREAM/my-aidoku-sources/blob/main/overrides/en.asurascans-v22.aix",
+      "sha256": "0c9f784bb09587a5ab078141629eadbd6cd2f5921b31d08dd1db099a01d7fe2b"
     },
     {
       "id": "en.athreascans",
