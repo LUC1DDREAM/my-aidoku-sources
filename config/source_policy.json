@@ -33,14 +33,6 @@
       ],
       "reason": "The original ReadComicOnline service has no live domain; use en.readcomicsonline instead.",
       "issue": "https://github.com/Aidoku-Community/sources/issues/639"
-    },
-    "en.asurascans": {
-      "name": "Asura Scans",
-      "catalogs": [
-        "maintained",
-        "legacy"
-      ],
-      "reason": "Source causes app crashes (reported 2026-08-16)"
     }
   },
   "minAppVersionOverrides": {
@@ -50,6 +42,10 @@
     "en.readcomicsonline": {
       "path": "overrides/en.readcomicsonline-v3.aix",
       "provenanceURL": "https://github.com/Nixzle/aidoku-sources/blob/main/overrides/en.readcomicsonline-v3.aix"
+    },
+    "en.asurascans": {
+      "path": "overrides/en.asurascans-v19.aix",
+      "provenanceURL": "https://github.com/LUC1DDREAM/my-aidoku-sources/blob/main/overrides/en.asurascans-v19.aix"
     }
   },
   "requiredMaintainedSources": [

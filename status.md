@@ -1,19 +1,18 @@
 # Aidoku Source Status
 
-Status last changed: 2026-08-16T18:57:45+00:00
+Status last changed: 2026-08-16T19:33:24+00:00
 
 Checks run daily; this timestamp changes only when catalog or health status changes.
 
-- Maintained: 49
+- Maintained: 50
 - Legacy-only: 49
-- Manually quarantined: 5
+- Manually quarantined: 4
 - Automatically quarantined: 3
 - Degraded/under observation: 0
 
 ## Quarantined
 
 - **Aqua Manga** (`en.aquamanga`): The site/parser changed and the source needs a rewrite before it is installable again. ([upstream issue](https://github.com/Aidoku-Community/sources/issues/605))
-- **Asura Scans** (`en.asurascans`): Source causes app crashes (reported 2026-08-16)
 - **Fire Scans** (`en.firescans`): The configured source domain does not currently resolve.
 - **Qi Scans** (`en.qiscans`): The configured source domain does not currently resolve.
 - **ReadComicOnline** (`en.readcomiconline`): The original ReadComicOnline service has no live domain; use en.readcomicsonline instead. ([upstream issue](https://github.com/Aidoku-Community/sources/issues/639))
