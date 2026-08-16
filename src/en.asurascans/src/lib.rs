@@ -4,7 +4,7 @@ use aidoku::{
 	Home, HomeComponent, HomeComponentValue, HomeLayout, Link, Listing, ListingProvider, Manga,
 	MangaPageResult, MangaStatus, MangaWithChapter, MigrationHandler, NotificationHandler, Page,
 	PageContent, Result, Source, Viewer, WebLoginHandler,
-	alloc::{String, Vec, string::ToString, vec},
+	alloc::{String, Vec, string::ToString, vec, boxed::Box},
 	helpers::uri::QueryParameters,
 	imports::{
 		defaults::defaults_get,
@@ -16,9 +16,6 @@ use aidoku::{
 
 mod auth;
 mod helpers;
-mod models;
-
-use models::*;
 
 const BASE_URL: &str = "https://asurascans.com";
 const API_URL: &str = "https://api.asurascans.com/api";
@@ -117,7 +114,7 @@ impl Source for AsuraScans {
 			.is_some();
 
 		Ok(MangaPageResult {
-			manga: entries,
+			entries,
 			has_next_page,
 		})
 	}
@@ -241,7 +238,7 @@ impl Source for AsuraScans {
 						Some(Chapter {
 							key: chapter_str.to_string(),
 							title: Some(title),
-							number: Some(chapter_number),
+							chapter_number: Some(chapter_number),
 							date_uploaded,
 							..Default::default()
 						})
@@ -256,7 +253,7 @@ impl Source for AsuraScans {
 		Ok(manga)
 	}
 
-	fn get_page_list(&self, chapter: Chapter, manga: Manga) -> Result<Vec<Page>> {
+	fn get_page_list(&self, manga: Manga, chapter: Chapter) -> Result<Vec<Page>> {
 		let url = format!("{BASE_URL}/comics/{}/chapter/{}", manga.key, chapter.key);
 		
 		let mut req = Request::get(url)?;
