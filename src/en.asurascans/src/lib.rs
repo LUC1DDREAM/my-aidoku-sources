@@ -16,6 +16,7 @@ use aidoku::{
 
 mod auth;
 mod helpers;
+mod models;
 
 const BASE_URL: &str = "https://asurascans.com";
 const API_URL: &str = "https://api.asurascans.com/api";
@@ -297,7 +298,4 @@ impl Source for AsuraScans {
 	}
 }
 
-#[aidoku::main]
-fn get_source() -> AsuraScans {
-	AsuraScans
-}
+aidoku::export!(AsuraScans);
