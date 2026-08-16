@@ -1,0 +1,69 @@
+name: Build Asura Scans v19
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'src/en.asurascans/**'
+      - '.github/workflows/build-asura.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable
+          target: wasm32-unknown-unknown
+
+      - name: Build Asura Scans source
+        working-directory: src/en.asurascans
+        run: |
+          chmod +x scripts/build.sh
+          bash scripts/build.sh
+
+      - name: Package AIX
+        working-directory: src/en.asurascans
+        run: |
+          mkdir -p Payload
+          cp res/source.json Payload/
+          cp res/icon.png Payload/
+          cp res/filters.json Payload/ 2>/dev/null || true
+          cp res/settings.json Payload/ 2>/dev/null || true
+          cp target/wasm32-unknown-unknown/release/*.wasm Payload/main.wasm
+          cd Payload && zip -r ../en.asurascans-v19.aix *
+
+      - name: Move to overrides
+        run: |
+          mkdir -p overrides icons
+          mv src/en.asurascans/en.asurascans-v19.aix overrides/
+          cp src/en.asurascans/res/icon.png icons/en.asurascans-v19.png
+
+      - name: Update source policy
+        run: python3 scripts/update_asura_policy.py
+
+      - name: Run catalog update
+        run: python3 scripts/update_sources.py
+
+      - name: Validate catalog
+        run: python3 scripts/validate_catalog.py
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if ! git diff --cached --quiet; then
+            git commit -m "feat: build Asura Scans v19 with crash fixes"
+            git push origin main
+          else
+            echo "No changes to commit"
+          fi
