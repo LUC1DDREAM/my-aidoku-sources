@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-08-15T14:40:58+00:00",
+  "generatedAt": "2026-08-16T18:57:45+00:00",
   "summary": {
-    "maintained": 50,
+    "maintained": 49,
     "legacyOnly": 49,
-    "manualQuarantined": 4,
+    "manualQuarantined": 5,
     "automaticQuarantined": 3,
     "degraded": 0
   },
@@ -23,6 +23,16 @@
         "maintained"
       ],
       "issue": "https://github.com/Aidoku-Community/sources/issues/605"
+    },
+    {
+      "id": "en.asurascans",
+      "name": "Asura Scans",
+      "type": "manual",
+      "reason": "Source causes app crashes (reported 2026-08-16)",
+      "catalogs": [
+        "legacy",
+        "maintained"
+      ]
     },
     {
       "id": "en.firescans",

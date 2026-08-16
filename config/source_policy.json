@@ -33,6 +33,14 @@
       ],
       "reason": "The original ReadComicOnline service has no live domain; use en.readcomicsonline instead.",
       "issue": "https://github.com/Aidoku-Community/sources/issues/639"
+    },
+    "en.asurascans": {
+      "name": "Asura Scans",
+      "catalogs": [
+        "maintained",
+        "legacy"
+      ],
+      "reason": "Source causes app crashes (reported 2026-08-16)"
     }
   },
   "minAppVersionOverrides": {

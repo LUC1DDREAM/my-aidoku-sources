@@ -14,19 +14,6 @@
       "baseURL": "https://www.silentquill.net"
     },
     {
-      "id": "en.asurascans",
-      "name": "Asura Scans",
-      "version": 18,
-      "iconURL": "icons/en.asurascans-v18.png",
-      "downloadURL": "sources/en.asurascans-v18.aix",
-      "languages": [
-        "en"
-      ],
-      "contentRating": 0,
-      "baseURL": "https://asurascans.com",
-      "minAppVersion": "0.7.1"
-    },
-    {
       "id": "en.athreascans",
       "name": "Athrea Scans",
       "version": 1,

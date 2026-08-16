@@ -1,7 +1,7 @@
 {
   "name": "Nixzle's Maintained Public English Aidoku Sources",
-  "generatedAt": "2026-08-15T14:40:57+00:00",
-  "sourceCount": 50,
+  "generatedAt": "2026-08-16T18:57:45+00:00",
+  "sourceCount": 49,
   "catalogPolicy": "Packages currently published by the active Aidoku community repository and not quarantined",
   "languagePolicy": "English or multilingual entries advertising en, All, or multi",
   "excludedPersonalUseOnly": [
@@ -34,16 +34,6 @@
       "license": "MIT OR Apache-2.0",
       "upstreamPackageURL": "https://aidoku-community.github.io/sources/sources/en.armageddon-v5.aix",
       "sha256": "ddcd09571af038033bfd065304fb0519b27cf04ab28c2eb65327603acdf3dd4f"
-    },
-    {
-      "id": "en.asurascans",
-      "name": "Asura Scans",
-      "version": 18,
-      "file": "sources/en.asurascans-v18.aix",
-      "repository": "Aidoku-Community/sources",
-      "license": "MIT OR Apache-2.0",
-      "upstreamPackageURL": "https://aidoku-community.github.io/sources/sources/en.asurascans-v18.aix",
-      "sha256": "bd80b1537fe2b7f844b38af6fedc32a71af8fb453ff434240eb71ed2e1cff312"
     },
     {
       "id": "en.athreascans",
