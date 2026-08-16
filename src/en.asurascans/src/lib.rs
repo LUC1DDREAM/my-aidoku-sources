@@ -179,8 +179,9 @@ impl Source for AsuraScans {
 
 		if needs_chapters {
 			// New HTML format: chapters are rendered as <a> tags, no more astro-island
+			// Filter out "Start Reading" buttons by selecting only chapter list items
 			let chapters = html
-				.select("a[href*='/chapter/']")
+				.select("a[href*='/chapter/'][data-astro-prefetch], a[href*='/chapter/'].group")
 				.map(|els| {
 					els.filter_map(|el| {
 						let href = el.attr("abs:href")?;
