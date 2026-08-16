@@ -79,16 +79,32 @@ impl Source for AsuraScans {
 		let html = Request::get(url)?.html()?;
 
 		let entries = html
-			.select("#series-grid > .series-card")
+			.select("#series-grid > .series-card, .grid > a[href^='/comics/']")
 			.map(|els| {
 				els.filter_map(|el| {
+					// Try to get slug from href
+					let href = el.attr("abs:href")?;
+					let slug = href
+						.split("/comics/")
+						.nth(1)?
+						.split('?')
+						.next()?
+						.to_string();
+
+					let title = el
+						.select_first("h3")
+						.and_then(|e| e.own_text())
+						.or_else(|| el.select_first("h2").and_then(|e| e.own_text()))?;
+
+					let cover = el
+						.select_first("img")
+						.and_then(|e| e.attr("abs:src"))
+						.or_else(|| el.select_first("img").and_then(|e| e.attr("abs:data-src")));
+
 					Some(Manga {
-						key: el
-							.select_first("a")?
-							.attr("abs:href")
-							.and_then(|url| helpers::get_manga_key(&url))?,
-						title: el.select_first("h3")?.own_text()?,
-						cover: el.select_first("img").and_then(|el| el.attr("abs:src")),
+						key: slug,
+						title,
+						cover,
 						..Default::default()
 					})
 				})
@@ -97,11 +113,11 @@ impl Source for AsuraScans {
 			.unwrap_or_default();
 
 		let has_next_page = html
-			.select_first("button[aria-label=\"Next page\"].cursor-pointer")
+			.select_first("button[aria-label=\"Next page\"].cursor-pointer, a[rel=\"next\"]")
 			.is_some();
 
 		Ok(MangaPageResult {
-			entries,
+			manga: entries,
 			has_next_page,
 		})
 	}
@@ -112,47 +128,57 @@ impl Source for AsuraScans {
 		needs_details: bool,
 		needs_chapters: bool,
 	) -> Result<Manga> {
-		let url = helpers::get_manga_url(&manga.key);
+		let url = format!("{BASE_URL}/comics/{}", manga.key);
 		let html = Request::get(&url)?.html()?;
 
 		if needs_details {
 			manga.title = html
-				.select_first("h1.text-xl.font-semibold")
+				.select_first("h1.text-xl, h1")
 				.and_then(|el| el.own_text())
 				.unwrap_or(manga.title);
+
 			manga.cover = html
-				.select_first("div#desktop-cover-container img")
-				.and_then(|el| el.attr("abs:src"));
-			manga.artists = html.select("a[href^=/browse?artist]").map(|els| {
-				els.filter_map(|el| el.text())
-					.filter(|s| s != "_")
-					.collect()
-			});
-			manga.authors = html.select("a[href^=/browse?author]").map(|els| {
-				els.filter_map(|el| el.text())
-					.filter(|s| s != "_")
-					.collect()
-			});
+				.select_first("div#desktop-cover-container img, img[alt*='cover']")
+				.and_then(|el| el.attr("abs:src"))
+				.or_else(|| {
+					html.select_first("img[alt]")
+						.and_then(|el| el.attr("abs:src"))
+				});
+
+			manga.artists = html
+				.select("a[href^=/browse?artist], a[href*='artist=']")
+				.map(|els| els.filter_map(|el| el.text()).filter(|s| s != "_").collect());
+
+			manga.authors = html
+				.select("a[href^=/browse?author], a[href*='author=']")
+				.map(|els| els.filter_map(|el| el.text()).filter(|s| s != "_").collect());
+
 			manga.description = html
-				.select_first("div#description-text")
-				.and_then(|el| el.text());
-			manga.url = Some(url);
-			manga.tags = html
-				.select("a[href^=/browse?genres=]")
-				.map(|els| els.filter_map(|el| el.text()).collect());
-			manga.status = html
-				.select_first(
-					"div.flex.gap-3.pt-4.border-t > div:nth-child(2) > div > span.text-base",
-				)
+				.select_first("div#description-text, div[id*='description']")
 				.and_then(|el| el.text())
-				.map(|s| match s.as_str() {
+				.or_else(|| {
+					html.select_first("p.text-white")
+						.and_then(|el| el.text())
+				});
+
+			manga.url = Some(url.clone());
+
+			manga.tags = html
+				.select("a[href^=/browse?genres=], a[href*='genres=']")
+				.map(|els| els.filter_map(|el| el.text()).collect());
+
+			manga.status = html
+				.select_first("span.text-base, span[class*='capitalize']")
+				.and_then(|el| el.text())
+				.map(|s| match s.to_lowercase().as_str() {
 					"ongoing" => MangaStatus::Ongoing,
 					"hiatus" => MangaStatus::Hiatus,
 					"completed" => MangaStatus::Completed,
-					"dropped" => MangaStatus::Cancelled,
+					"dropped" | "cancelled" => MangaStatus::Cancelled,
 					_ => MangaStatus::Unknown,
 				})
 				.unwrap_or_default();
+
 			let tags = manga.tags.as_deref().unwrap_or_default();
 			manga.content_rating = if tags
 				.as_ref()
@@ -163,134 +189,76 @@ impl Source for AsuraScans {
 			} else {
 				ContentRating::Safe
 			};
+
 			manga.viewer = html
-				.select_first(
-					"div.flex.gap-3.pt-4.border-t > div:nth-child(2) > div > span.text-base",
-				)
+				.select_first("span.text-base.uppercase, span[class*='uppercase']")
 				.and_then(|el| el.text())
-				.map(|s| match s.as_str() {
-					"manhwa" => Viewer::Webtoon,
-					"manhua" => Viewer::Webtoon,
-					"mangatoon" => Viewer::RightToLeft,
+				.map(|s| match s.to_lowercase().as_str() {
+					"manhwa" | "manhua" | "webtoon" => Viewer::Webtoon,
+					"manga" | "mangatoon" => Viewer::RightToLeft,
 					_ => Viewer::Webtoon,
 				})
 				.unwrap_or(Viewer::Webtoon);
 		}
 
 		if needs_chapters {
-			// Try to get chapter data from astro-island
-			let island_result = html
-				.select_first(
-					"astro-island[component-url*=ChapterListReact], astro-island[opts*=ChapterListReact]",
-				)
-				.and_then(|el| el.attr("props"));
-		
-			// If astro-island not found, return manga with empty chapters instead of crashing
-			if island_result.is_none() {
-				manga.chapters = Some(Vec::new());
-				return Ok(manga);
-			}
-		
-			let island_props = island_result.unwrap();
-			let json_result = serde_json::from_str::<serde_json::Value>(&island_props);
-		
-			// If JSON parsing fails, return empty chapters
-			if json_result.is_err() {
-				manga.chapters = Some(Vec::new());
-				return Ok(manga);
-			}
-		
-			let json = json_result.unwrap();
-			let chapters_arr = json.get("chapters")
-				.and_then(|v| v.get(1))
-				.and_then(|v| v.as_array());
-		
-			// If chapters structure missing, return empty chapters
-			if chapters_arr.is_none() {
-				manga.chapters = Some(Vec::new());
-				return Ok(manga);
-			}
-		
-			let chapters_arr = chapters_arr.unwrap();
+			// New HTML format: chapters are direct <a> tags
+			let chapters = html
+				.select("a[href*='/chapter/']")
+				.map(|els| {
+					els.filter_map(|el| {
+						let href = el.attr("abs:href")?;
+						
+						// Extract chapter number from URL: /comics/slug/chapter/123
+						let chapter_str = href.split("/chapter/").nth(1)?.split('?').next()?;
+						let chapter_number = chapter_str.parse::<f32>().ok()?;
 
-			let skip_locked = !defaults_get::<bool>("showLocked").unwrap_or(true);
-			let is_subscribed = auth::is_subscribed();
+						let title = el
+							.select_first("span")
+							.and_then(|e| e.text())
+							.unwrap_or_else(|| format!("Chapter {}", chapter_number));
 
-			manga.chapters = Some(
-				chapters_arr
-					.iter()
-					.filter_map(|obj| {
-						let obj = obj[1].as_object()?;
+						// Date is usually in a span with text-white/40 class
+						let date_str = el
+							.select_first("span.text-white\\/40, span.text-sm")
+							.and_then(|e| e.text());
 
-						let locked =
-							!is_subscribed && obj["is_locked"][1].as_bool().unwrap_or_default();
-						if skip_locked && locked {
-							return None;
-						}
-
-						let chapter_number = obj["number"][1].as_f64().map(|f| f as f32)?;
-						let key = chapter_number.to_string();
-						const DATE_FORMAT: &str = "yyyy-MM-dd'T'HH:mm:ss'Z'";
-						let date_uploaded = obj["published_at"][1].as_str().and_then(|s| {
-							if let Some((before_dot, _)) = s.split_once('.') {
-								parse_date(format!("{before_dot}Z"), DATE_FORMAT)
-							} else {
-								parse_date(s, DATE_FORMAT)
+						let date_uploaded = date_str.and_then(|s| {
+							// Try various date formats
+							const DATE_FORMATS: &[&str] = &[
+								"MMM dd, yyyy",
+								"MMM d, yyyy",
+								"yyyy-MM-dd",
+							];
+							for format in DATE_FORMATS {
+								if let Some(ts) = parse_date(&s, format) {
+									return Some(ts);
+								}
 							}
+							None
 						});
-						let url = helpers::get_chapter_url(&key, &manga.key);
 
 						Some(Chapter {
-							key,
-							chapter_number: Some(chapter_number),
+							key: chapter_str.to_string(),
+							title: Some(title),
+							number: Some(chapter_number),
 							date_uploaded,
-							url: Some(url),
-							locked,
 							..Default::default()
 						})
 					})
-					.collect(),
-			);
+					.collect()
+				})
+				.unwrap_or_default();
+
+			manga.chapters = Some(chapters);
 		}
 
 		Ok(manga)
 	}
 
-	fn get_page_list(&self, manga: Manga, chapter: Chapter) -> Result<Vec<Page>> {
-		let api_url = format!("{API_URL}/series/{}/chapters/{}", manga.key, chapter.key);
-		let mut api_req = Request::get(api_url)?;
-		if let Ok(status) = auth::get_login_status() {
-			api_req.set_header("Authorization", &format!("Bearer {}", status.access_token));
-			api_req.set_header(
-				"Cookie",
-				&format!(
-					"access_token={}; refresh_token={}",
-					status.access_token, status.refresh_token
-				),
-			);
-		}
-		if let Ok(json) = api_req.json_owned::<serde_json::Value>()
-			&& let Some(page_arr) = json["data"]["chapter"]["pages"].as_array()
-		{
-			let pages: Vec<Page> = page_arr
-				.iter()
-				.filter_map(|obj| {
-					let url = obj
-						.as_str()
-						.or_else(|| obj["url"].as_str())
-						.or_else(|| obj["url"][1].as_str())?;
-					Some(Page {
-						content: PageContent::url(url),
-						..Default::default()
-					})
-				})
-				.collect();
-			if !pages.is_empty() {
-				return Ok(pages);
-			}
-		}
-
-		let url = helpers::get_chapter_url(&chapter.key, &manga.key);
+	fn get_page_list(&self, chapter: Chapter, manga: Manga) -> Result<Vec<Page>> {
+		let url = format!("{BASE_URL}/comics/{}/chapter/{}", manga.key, chapter.key);
+		
 		let mut req = Request::get(url)?;
 		if let Ok(status) = auth::get_login_status() {
 			req.set_header("Authorization", &format!("Bearer {}", status.access_token));
@@ -302,271 +270,37 @@ impl Source for AsuraScans {
 				),
 			);
 		}
+		
 		let html = req.html()?;
 
-		// Try to get page data from astro-island
-		let island_result = html
-			.select_first(
-				"astro-island[component-url*=ChapterReader], astro-island[opts*=ChapterReader]",
-			)
-			.and_then(|el| el.attr("props"));
-	
-		// If astro-island not found, return empty pages instead of crashing
-		if island_result.is_none() {
-			return Ok(Vec::new());
-		}
-	
-		let island_props = island_result.unwrap();
-		let json_result = serde_json::from_str::<serde_json::Value>(&island_props);
-	
-		// If JSON parsing fails, return empty pages
-		if json_result.is_err() {
-			return Ok(Vec::new());
-		}
-	
-		let json = json_result.unwrap();
-		let page_arr = json.get("pages")
-			.and_then(|v| v.get(1))
-			.and_then(|v| v.as_array());
-	
-		// If pages structure missing, return empty pages
-		if page_arr.is_none() {
-			return Ok(Vec::new());
-		}
-	
-		let page_arr = page_arr.unwrap();
+		// Try to find images in the page
+		let pages = html
+			.select("img[src*='cdn.asurascans.com'], img[data-src*='cdn.asurascans.com']")
+			.map(|els| {
+				els.filter_map(|el| {
+					let url = el
+						.attr("abs:src")
+						.or_else(|| el.attr("abs:data-src"))?;
+					
+					// Filter out covers/icons
+					if url.contains("/covers/") || url.contains("/icons/") {
+						return None;
+					}
 
-		Ok(page_arr
-			.iter()
-			.filter_map(|obj| {
-				let url = obj[1]["url"][1].as_str()?;
-				Some(Page {
-					content: PageContent::url(url),
-					..Default::default()
+					Some(Page {
+						content: PageContent::url(url),
+						..Default::default()
+					})
 				})
+				.collect()
 			})
-			.collect())
+			.unwrap_or_default();
+
+		Ok(pages)
 	}
 }
 
-impl Home for AsuraScans {
-	fn get_home(&self) -> Result<HomeLayout> {
-		let html = Request::get(BASE_URL)?.html()?;
-
-		let mut components = Vec::new();
-
-		if let Some(trending_today) =
-			html.select_first("astro-island[opts*=TrendingSection] > section")
-		{
-			let title = trending_today
-				.select_first("h2")
-				.and_then(|el| el.text())
-				.unwrap_or("Trending Today".into());
-			let entries: Vec<Link> = trending_today
-				.select("div.embla-trending > div > div > a")
-				.map(|els| {
-					els.filter_map(|el| {
-						let key = helpers::get_manga_key(&el.attr("abs:href")?)?;
-						Some(
-							Manga {
-								key,
-								title: el.select_first("span.block")?.text()?,
-								cover: el.select_first("img").and_then(|img| img.attr("abs:src")),
-								..Default::default()
-							}
-							.into(),
-						)
-					})
-					.collect()
-				})
-				.unwrap_or_default();
-			if !entries.is_empty() {
-				components.push(HomeComponent {
-					title: Some(title),
-					subtitle: None,
-					value: HomeComponentValue::Scroller {
-						entries,
-						listing: None,
-					},
-				});
-			}
-		}
-
-		if let Some(latest_updates) =
-			html.select_first("astro-island[opts*=LatestUpdates] > section")
-		{
-			let title = latest_updates
-				.select_first("h2")
-				.and_then(|el| el.text())
-				.unwrap_or("Latest Updates".into());
-			let entries: Vec<MangaWithChapter> = latest_updates
-				.select("div.grid > div.grid")
-				.map(|els| {
-					els.filter_map(|el| {
-						let link = el.select_first("a.font-bold")?;
-						let chapter_link = el.select_first("div.flex > div > a.group.grid")?;
-						let manga_key = helpers::get_manga_key(&link.attr("abs:href")?)?;
-						let chapter_key =
-							helpers::get_chapter_key(&chapter_link.attr("abs:href")?)?;
-						let chapter_number = chapter_link
-							.select_first("span.font-medium")?
-							.text()?
-							.strip_prefix("Chapter")?
-							.trim()
-							.parse()
-							.ok();
-						Some(MangaWithChapter {
-							manga: Manga {
-								key: manga_key,
-								title: link.text()?,
-								cover: el.select_first("img").and_then(|img| img.attr("abs:src")),
-								..Default::default()
-							},
-							chapter: Chapter {
-								key: chapter_key,
-								chapter_number,
-								..Default::default()
-							},
-						})
-					})
-					.collect()
-				})
-				.unwrap_or_default();
-			if !entries.is_empty() {
-				components.push(HomeComponent {
-					title: Some(title),
-					subtitle: None,
-					value: HomeComponentValue::MangaChapterList {
-						page_size: None,
-						entries,
-						listing: None,
-					},
-				});
-			}
-		}
-
-		Ok(HomeLayout { components })
-	}
+#[aidoku::main]
+fn get_source() -> Box<dyn Source> {
+	Box::new(AsuraScans)
 }
-
-impl DeepLinkHandler for AsuraScans {
-	fn handle_deep_link(&self, url: String) -> Result<Option<DeepLinkResult>> {
-		let Some(manga_key) = helpers::get_manga_key(&url) else {
-			return Ok(None);
-		};
-
-		if let Some(chapter_key) = helpers::get_chapter_key(&url) {
-			Ok(Some(DeepLinkResult::Chapter {
-				manga_key,
-				key: chapter_key,
-			}))
-		} else {
-			Ok(Some(DeepLinkResult::Manga { key: manga_key }))
-		}
-	}
-}
-
-impl MigrationHandler for AsuraScans {
-	fn handle_manga_migration(&self, key: String) -> Result<String> {
-		// v12: asuracomic.net -> asurascans.com, trailing '-' removed from ids
-		Ok(key.strip_suffix("-").map(Into::into).unwrap_or(key))
-	}
-
-	fn handle_chapter_migration(&self, _manga_key: String, chapter_key: String) -> Result<String> {
-		Ok(chapter_key) // no change
-	}
-}
-
-impl ListingProvider for AsuraScans {
-	fn get_manga_list(&self, listing: Listing, page: i32) -> Result<MangaPageResult> {
-		match listing.id.as_str() {
-			"Ranking" => {
-				let html = Request::get(format!("{BASE_URL}/series-ranking"))?.html()?;
-				let entries = html
-					.select(".comics-ranking-list > a")
-					.map(|els| {
-						els.filter_map(|el| {
-							// the ranking page doesn't have extra ids appended to the slug
-							let key = el.attr("abs:href").and_then(|url| {
-								url.split('/')
-									.skip_while(|segment| *segment != "comics")
-									.nth(1)
-									.map(Into::into)
-							})?;
-							Some(Manga {
-								key,
-								title: el.select_first(".flex-1 > .text-sm")?.own_text()?,
-								cover: el.select_first("img").and_then(|el| el.attr("abs:src")),
-								..Default::default()
-							})
-						})
-						.collect()
-					})
-					.unwrap_or_default();
-				Ok(MangaPageResult {
-					entries,
-					has_next_page: false,
-				})
-			}
-			"Bookmarks" => {
-				let offset = 20 * (page - 1);
-				let token = auth::get_access_token()?;
-				let url = format!(
-					"{API_URL}/me/bookmarks?sort=updated&order=desc&limit=20&offset={offset}",
-				);
-				let json: BookmarkResponse = Request::get(url)?
-					.header("Authorization", &format!("Bearer {token}"))
-					.json_owned()?;
-				let entries = json.data.into_iter().map(Into::into).collect();
-				let has_next_page = page < json.meta.total;
-				Ok(MangaPageResult {
-					entries,
-					has_next_page,
-				})
-			}
-			_ => bail!("Invalid listing"),
-		}
-	}
-}
-
-impl DynamicListings for AsuraScans {
-	fn get_dynamic_listings(&self) -> Result<Vec<Listing>> {
-		if !auth::is_logged_in() {
-			return Ok(Vec::new());
-		}
-		Ok(vec![Listing {
-			id: "Bookmarks".into(),
-			name: "Bookmarks".into(),
-			..Default::default()
-		}])
-	}
-}
-
-impl WebLoginHandler for AsuraScans {
-	fn handle_web_login(&self, _key: String, cookies: HashMap<String, String>) -> Result<bool> {
-		auth::handle_login(cookies)
-	}
-}
-
-impl NotificationHandler for AsuraScans {
-	fn handle_notification(&self, notification: String) {
-		if notification != "login" {
-			return;
-		}
-		let is_logged_in = defaults_get::<String>("login").is_some();
-		if !is_logged_in {
-			auth::logout();
-		}
-	}
-}
-
-register_source!(
-	AsuraScans,
-	Home,
-	DeepLinkHandler,
-	MigrationHandler,
-	ListingProvider,
-	DynamicListings,
-	WebLoginHandler,
-	NotificationHandler
-);
