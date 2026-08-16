@@ -310,20 +310,22 @@ def read_package(
             if total_size > MAX_ARCHIVE_UNCOMPRESSED_BYTES:
                 raise ValueError(f"{label} expands beyond the archive size limit")
 
-            required = ("payload/source.json", "payload/main.wasm", "payload/icon.png")
+            # Support both Payload/ (official) and payload/ (lowercase)
+            payload_prefix = "Payload/" if "Payload/source.json" in names else "payload/"
+            required = (f"{payload_prefix}source.json", f"{payload_prefix}main.wasm", f"{payload_prefix}icon.png")
             missing = [name for name in required if name not in names]
             if missing:
                 raise ValueError(f"{label} is missing {', '.join(missing)}")
-            manifest_entry = archive.getinfo(names["payload/source.json"])
-            icon_entry = archive.getinfo(names["payload/icon.png"])
+            manifest_entry = archive.getinfo(names[f"{payload_prefix}source.json"])
+            icon_entry = archive.getinfo(names[f"{payload_prefix}icon.png"])
             if manifest_entry.file_size > MAX_MANIFEST_BYTES:
                 raise ValueError(f"{label} contains an oversized manifest")
             if icon_entry.file_size > MAX_ICON_BYTES:
                 raise ValueError(f"{label} contains an oversized icon")
 
-            manifest_bytes = archive.read(names["payload/source.json"])
-            wasm = archive.read(names["payload/main.wasm"])
-            icon = archive.read(names["payload/icon.png"])
+            manifest_bytes = archive.read(names[f"{payload_prefix}source.json"])
+            wasm = archive.read(names[f"{payload_prefix}main.wasm"])
+            icon = archive.read(names[f"{payload_prefix}icon.png"])
     except (zipfile.BadZipFile, zipfile.LargeZipFile, RuntimeError) as error:
         raise ValueError(f"{label} is not a safe readable AIX archive: {error}") from error
 

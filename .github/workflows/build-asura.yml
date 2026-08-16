@@ -32,13 +32,14 @@ jobs:
       - name: Package AIX
         working-directory: src/en.asurascans
         run: |
-          mkdir -p payload
-          cp res/source.json payload/
-          cp res/icon.png payload/
-          cp res/filters.json payload/ 2>/dev/null || true
-          cp res/settings.json payload/ 2>/dev/null || true
-          cp target/wasm32-unknown-unknown/release/*.wasm payload/main.wasm
-          cd payload && zip -r ../en.asurascans-v19.aix *
+          mkdir -p Payload
+          cp res/source.json Payload/
+          cp res/icon.png Payload/
+          cp res/filters.json Payload/ 2>/dev/null || true
+          cp res/settings.json Payload/ 2>/dev/null || true
+          cp target/wasm32-unknown-unknown/release/*.wasm Payload/main.wasm
+          zip -q -r en.asurascans-v19.aix Payload/
+          unzip -l en.asurascans-v19.aix
 
       - name: Move to overrides
         run: |
