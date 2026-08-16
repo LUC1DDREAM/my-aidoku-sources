@@ -298,4 +298,21 @@ impl Source for AsuraScans {
 	}
 }
 
-aidoku::export!(AsuraScans);
+impl Home for AsuraScans {}
+impl DeepLinkHandler for AsuraScans {}
+impl MigrationHandler for AsuraScans {}
+impl ListingProvider for AsuraScans {}
+impl DynamicListings for AsuraScans {}
+impl WebLoginHandler for AsuraScans {}
+impl NotificationHandler for AsuraScans {}
+
+register_source!(
+	AsuraScans,
+	Home,
+	DeepLinkHandler,
+	MigrationHandler,
+	ListingProvider,
+	DynamicListings,
+	WebLoginHandler,
+	NotificationHandler
+);
