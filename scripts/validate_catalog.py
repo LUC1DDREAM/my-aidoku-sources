@@ -67,8 +67,8 @@ def safe_relative_path(value: object, field: str, expected_directory: str) -> Pu
         f"{field} contains an unsafe path component: {value!r}",
     )
     require(
-        len(path.parts) == 2 and path.parts[0] == expected_directory,
-        f"{field} must point directly inside {expected_directory}/: {value!r}",
+        len(path.parts) == 2 and path.parts[0] in {expected_directory, "overrides"},
+        f"{field} must point directly inside {expected_directory}/ or overrides/: {value!r}",
     )
     return path
 
