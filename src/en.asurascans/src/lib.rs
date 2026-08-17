@@ -9,7 +9,7 @@ use aidoku::{
 	imports::{
 		defaults::defaults_get,
 		net::{Request, TimeUnit, set_rate_limit},
-		std::parse_date,
+		std::{current_date, parse_date},
 	},
 	prelude::*,
 };
@@ -211,6 +211,37 @@ impl Source for AsuraScans {
 													parse_date(s.to_string(), "yyyy-MM-dd'T'HH:mm:ss'Z'")
 												}
 											});
+						
+										// If locked, add early access info to scanlators
+										let scanlators = if is_premium {
+											obj.get("early_access_until")
+												.and_then(|d| d.get(1))
+												.and_then(|d| d.as_str())
+												.and_then(|s| {
+													// Parse the unlock time
+													if let Some((before_dot, _)) = s.split_once('.') {
+														parse_date(format!("{before_dot}Z"), "yyyy-MM-dd'T'HH:mm:ss'Z'")
+													} else {
+														parse_date(s.to_string(), "yyyy-MM-dd'T'HH:mm:ss'Z'")
+													}
+												})
+												.map(|unlock_time| {
+													// Calculate time until unlock
+													let now = current_date();
+													let hours_left = ((unlock_time - now) / 3600.0).max(0.0) as i64;
+									
+													if hours_left > 48 {
+														let days = (hours_left / 24) + 1;
+														vec![format!("🔒 Unlocks in {} days", days)]
+													} else if hours_left > 0 {
+														vec![format!("🔒 Unlocks in {} hours", hours_left)]
+													} else {
+														vec!["🔒 Premium".to_string()]
+													}
+												})
+										} else {
+											None
+										};
 									
 										let url = helpers::get_chapter_url(&slug, &manga.key);
 									
@@ -219,6 +250,7 @@ impl Source for AsuraScans {
 											chapter_number: Some(number),
 											date_uploaded,
 											url: Some(url),
+											scanlators,
 											locked: is_premium,
 											..Default::default()
 										})
