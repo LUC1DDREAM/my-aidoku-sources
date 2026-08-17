@@ -207,7 +207,7 @@ impl Source for AsuraScans {
 									} else {
 										date_str.as_str()
 									};
-									parse_date(cleaned, "yyyy-MM-dd'T'HH:mm:ss", None)
+									parse_date(cleaned, "yyyy-MM-dd'T'HH:mm:ss")
 								});
 
 							let url = helpers::get_chapter_url(&slug, &manga.key);
