@@ -200,14 +200,14 @@ impl Source for AsuraScans {
 								.and_then(|s| {
 									let date_str = s.read();
 									// Try parsing ISO 8601: "2026-08-17T08:19:16.312334Z"
-									// Strip milliseconds if present
+									// Strip fractional seconds if present
 									let cleaned = if let Some(dot_pos) = date_str.find('.') {
-										// Remove fractional seconds: "2026-08-17T08:19:16"
-										&date_str[..dot_pos]
+										// Create new String without fractional seconds
+										String::from(&date_str[..dot_pos])
 									} else {
-										date_str.as_str()
+										date_str
 									};
-									parse_date(cleaned, "yyyy-MM-dd'T'HH:mm:ss")
+									parse_date(&cleaned, "yyyy-MM-dd'T'HH:mm:ss")
 								});
 
 							let url = helpers::get_chapter_url(&slug, &manga.key);
