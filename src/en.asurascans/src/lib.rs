@@ -232,10 +232,12 @@ impl Source for AsuraScans {
 													let hours_left = (seconds_left as f64) / 3600.0;
 								
 													if hours_left > 48.0 {
-														let days = (hours_left / 24.0).ceil() as i32;
+														// Round up days (manual ceil for no_std)
+														let days = ((hours_left / 24.0) + 0.999) as i32;
 														vec![format!("🔒 Unlocks in {} days", days)]
 													} else if hours_left > 1.0 {
-														let hours = hours_left.ceil() as i32;
+														// Round up hours
+														let hours = (hours_left + 0.999) as i32;
 														vec![format!("🔒 Unlocks in {} hours", hours)]
 													} else {
 														vec!["🔒 Premium".to_string()]
