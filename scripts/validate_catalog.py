@@ -375,13 +375,21 @@ def validate_catalog(catalog_root: Path, catalog_name: str, minimum_sources: int
         package_hashes[source_id] = validate_aix(package_file, entry, catalog_name)
 
     require(source_ids == sorted(source_ids), f"{catalog_name}: index sources are not sorted by id")
-    referenced_packages = {Path(path).name for path in package_paths}
+    referenced_packages = set(package_paths)  # Keep full paths like "sources/..." or "overrides/..."
     referenced_icons = {Path(path).name for path in icon_paths}
     actual_packages = {
-        path.relative_to(catalog_root / "sources").as_posix()
+        f"sources/{path.relative_to(catalog_root / 'sources').as_posix()}"
         for path in (catalog_root / "sources").rglob("*")
         if path.is_file() or path.is_symlink()
     }
+    # Also include overrides/ packages
+    overrides_dir = catalog_root / "overrides"
+    if overrides_dir.exists():
+        actual_packages |= {
+            f"overrides/{path.relative_to(catalog_root / 'overrides').as_posix()}"
+            for path in overrides_dir.rglob("*")
+            if path.is_file() or path.is_symlink()
+        }
     actual_icons = {
         path.relative_to(catalog_root / "icons").as_posix()
         for path in (catalog_root / "icons").rglob("*")
@@ -389,7 +397,7 @@ def validate_catalog(catalog_root: Path, catalog_name: str, minimum_sources: int
     }
     require(
         actual_packages == referenced_packages,
-        f"{catalog_name}: sources/ contains missing or unreferenced packages",
+        f"{catalog_name}: sources/ or overrides/ contains missing or unreferenced packages",
     )
     require(
         actual_icons == referenced_icons,
