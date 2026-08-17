@@ -11,8 +11,8 @@ if 'en.asurascans' in policy.get('quarantinedSources', {}):
 # Add local override
 policy['localPackageOverrides'] = policy.get('localPackageOverrides', {})
 policy['localPackageOverrides']['en.asurascans'] = {
-    'path': 'overrides/en.asurascans-v22.aix',
-    'provenanceURL': 'https://github.com/LUC1DDREAM/my-aidoku-sources/blob/main/overrides/en.asurascans-v22.aix'
+    'path': 'overrides/en.asurascans-v23.aix',
+    'provenanceURL': 'https://github.com/LUC1DDREAM/my-aidoku-sources/blob/main/overrides/en.asurascans-v23.aix'
 }
 
 with open('config/source_policy.json', 'w') as f:

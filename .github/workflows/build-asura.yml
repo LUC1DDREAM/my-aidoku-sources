@@ -1,4 +1,4 @@
-name: Build Asura Scans v19
+name: Build Asura Scans v23
 
 on:
   workflow_dispatch:
@@ -38,14 +38,14 @@ jobs:
           cp res/filters.json Payload/ 2>/dev/null || true
           cp res/settings.json Payload/ 2>/dev/null || true
           cp target/wasm32-unknown-unknown/release/*.wasm Payload/main.wasm
-          zip -q -r en.asurascans-v22.aix Payload/
-          unzip -l en.asurascans-v22.aix
+          zip -q -r en.asurascans-v23.aix Payload/
+          unzip -l en.asurascans-v23.aix
 
       - name: Move to overrides
         run: |
           mkdir -p overrides icons
-          mv src/en.asurascans/en.asurascans-v22.aix overrides/
-          cp src/en.asurascans/res/icon.png icons/en.asurascans-v22.png
+          mv src/en.asurascans/en.asurascans-v23.aix overrides/
+          cp src/en.asurascans/res/icon.png icons/en.asurascans-v23.png
 
       - name: Update source policy
         run: python3 scripts/update_asura_policy.py
@@ -62,7 +62,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
           if ! git diff --cached --quiet; then
-            git commit -m "feat: Asura Scans v22 - fix duplicate first chapter"
+            git commit -m "feat: Asura Scans v23 - API-based chapters with locked status and dates"
             git push origin main
           else
             echo "No changes to commit"

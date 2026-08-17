@@ -178,49 +178,44 @@ impl Source for AsuraScans {
 		}
 
 		if needs_chapters {
-			// New HTML format: chapters are rendered as <a> tags, no more astro-island
-			// Filter out "Start Reading" buttons by selecting only chapter list items
-			let chapters = html
-				.select("a[href*='/chapter/'][data-astro-prefetch], a[href*='/chapter/'].group")
-				.map(|els| {
-					els.filter_map(|el| {
-						let href = el.attr("abs:href")?;
-					
-						// Extract chapter number from URL
-						let chapter_str = href.split("/chapter/").nth(1)?.split('?').next()?;
-						let chapter_number = chapter_str.parse::<f32>().ok()?;
+			// Use API for chapter list to get accurate locked status and dates
+			let api_url = format!("{API_URL}/series/{}/chapters", manga.key);
+			let chapters_result = Request::get(&api_url)
+				.and_then(|req| req.json::<Value>());
+		
+			let chapters = chapters_result
+				.ok()
+				.and_then(|json| json.get("data").as_array())
+				.map(|arr| {
+					arr.iter()
+						.filter_map(|ch| {
+							let number = ch.get("number").as_float()?;
+							let slug = ch.get("slug").as_string()?.read();
+							let is_premium = ch.get("is_premium").as_bool().unwrap_or(false);
+						
+							// Parse ISO 8601 date from published_at
+							let date_uploaded = ch
+								.get("published_at")
+								.as_string()
+								.and_then(|s| {
+									let date_str = s.read();
+									// Parse ISO 8601: "2026-08-17T08:19:16.312334Z"
+									parse_date(&date_str, "yyyy-MM-dd'T'HH:mm:ss")
+										.or_else(|| parse_date(&date_str, "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'"))
+								});
 
-						// Date parsing
-						let date_str = el
-							.select_first("span.text-white\\/40, span.text-sm")
-							.and_then(|e| e.text());
+							let url = helpers::get_chapter_url(&slug, &manga.key);
 
-						let date_uploaded = date_str.and_then(|s| {
-							const DATE_FORMATS: &[&str] = &[
-								"MMM dd, yyyy",
-								"MMM d, yyyy",
-								"yyyy-MM-dd",
-							];
-							for format in DATE_FORMATS {
-								if let Some(ts) = parse_date(&s, format) {
-									return Some(ts);
-								}
-							}
-							None
-						});
-
-						let url = helpers::get_chapter_url(chapter_str, &manga.key);
-
-						Some(Chapter {
-							key: chapter_str.to_string(),
-							chapter_number: Some(chapter_number),
-							date_uploaded,
-							url: Some(url),
-							locked: false, // Can't detect from HTML easily
-							..Default::default()
+							Some(Chapter {
+								key: slug.to_string(),
+								chapter_number: Some(number),
+								date_uploaded,
+								url: Some(url),
+								locked: is_premium,
+								..Default::default()
+							})
 						})
-					})
-					.collect()
+						.collect()
 				})
 				.unwrap_or_default();
 
