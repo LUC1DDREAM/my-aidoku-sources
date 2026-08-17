@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-16T20:19:50+00:00",
+  "generatedAt": "2026-08-17T13:02:29+00:00",
   "summary": {
     "maintained": 50,
     "legacyOnly": 49,
@@ -90,13 +90,13 @@
   ],
   "degraded": [
     {
-      "id": "en.hennoveltranslations",
-      "name": "Hennoveltranslations",
-      "baseURL": "https://hennoveltranslations.com",
+      "id": "en.ezmanga",
+      "name": "EzManga",
+      "baseURL": "https://ezmanga.org",
       "status": "failing",
       "consecutiveFailures": 1,
       "consecutiveSuccesses": 0,
-      "lastObservationDate": "2026-08-16",
+      "lastObservationDate": "2026-08-17",
       "required": false
     }
   ]

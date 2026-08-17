@@ -1,6 +1,6 @@
 # Aidoku Source Status
 
-Status last changed: 2026-08-16T20:19:50+00:00
+Status last changed: 2026-08-17T13:02:29+00:00
 
 Checks run daily; this timestamp changes only when catalog or health status changes.
 
@@ -22,4 +22,4 @@ Checks run daily; this timestamp changes only when catalog or health status chan
 
 ## Under observation
 
-- **Hennoveltranslations** (`en.hennoveltranslations`): 1 consecutive failed check(s), last observed 2026-08-16
+- **EzManga** (`en.ezmanga`): 1 consecutive failed check(s), last observed 2026-08-17

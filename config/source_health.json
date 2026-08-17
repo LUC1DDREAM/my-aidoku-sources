@@ -1,11 +1,11 @@
 {
   "version": 1,
   "sources": {
-    "en.hennoveltranslations": {
+    "en.ezmanga": {
       "status": "failing",
       "consecutiveFailures": 1,
       "consecutiveSuccesses": 0,
-      "lastObservationDate": "2026-08-16"
+      "lastObservationDate": "2026-08-17"
     },
     "en.mangasect": {
       "status": "quarantined",
