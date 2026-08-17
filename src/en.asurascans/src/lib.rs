@@ -211,9 +211,9 @@ impl Source for AsuraScans {
 													parse_date(s.to_string(), "yyyy-MM-dd'T'HH:mm:ss'Z'")
 												}
 											});
-						
-										// If locked, add early access info to scanlators
-										let scanlators = if is_premium {
+				
+											// If locked, add early access info to scanlators
+											let scanlators = if is_premium {
 											obj.get("early_access_until")
 												.and_then(|d| d.get(1))
 												.and_then(|d| d.as_str())
@@ -229,7 +229,7 @@ impl Source for AsuraScans {
 													// Calculate time until unlock
 													let now = current_date();
 													let hours_left = ((unlock_time - now) / 3600.0).max(0.0);
-								
+							
 													if hours_left > 48.0 {
 														let days = (hours_left / 24.0).ceil() as i32;
 														vec![format!("🔒 Unlocks in {} days", days)]
@@ -243,7 +243,7 @@ impl Source for AsuraScans {
 										} else {
 											None
 										};
-									
+					
 										let url = helpers::get_chapter_url(&slug, &manga.key);
 									
 										Some(Chapter {
