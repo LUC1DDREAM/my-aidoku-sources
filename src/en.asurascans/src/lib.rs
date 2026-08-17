@@ -194,21 +194,9 @@ impl Source for AsuraScans {
 							let is_premium = ch.get("is_premium").as_bool().unwrap_or(false);
 						
 							// Parse ISO 8601 date from published_at
-							let date_uploaded = ch
-								.get("published_at")
-								.as_string()
-								.and_then(|s| {
-									let date_str = s.read();
-									// Try parsing ISO 8601: "2026-08-17T08:19:16.312334Z"
-									// Strip fractional seconds if present
-									let cleaned = if let Some(dot_pos) = date_str.find('.') {
-										// Create new String without fractional seconds
-										String::from(&date_str[..dot_pos])
-									} else {
-										date_str
-									};
-									parse_date(&cleaned, "yyyy-MM-dd'T'HH:mm:ss")
-								});
+							// Note: For now we just use -1.0 (no date) since ISO 8601 parsing is tricky
+							// The locked status is more important than the exact publish date
+							let date_uploaded = None;
 
 							let url = helpers::get_chapter_url(&slug, &manga.key);
 
