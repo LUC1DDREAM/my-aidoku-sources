@@ -1028,6 +1028,9 @@ def write_catalog(
         index_entries = []
         inventory_entries = []
         checksum_lines = []
+        policy = load_policy()
+        local_overrides = policy.get("localPackageOverrides", {})
+        
         for source in selected:
             validate_source_id(source["id"])
             read_package(
@@ -1038,19 +1041,30 @@ def write_catalog(
             )
             package_name = f"{source['id']}-v{source['version']}.aix"
             icon_name = f"{source['id']}-v{source['version']}.png"
-            package_path = source_dir / package_name
+            
+            # Check if this is a local override
+            is_override = source["id"] in local_overrides
+            if is_override:
+                # For overrides, use the existing path from overrides/
+                override_detail = local_overrides[source["id"]]
+                download_path = str(override_detail["path"])
+            else:
+                # Regular sources go to sources/
+                package_path = source_dir / package_name
+                package_path.write_bytes(source["package"])
+                download_path = f"sources/{package_name}"
+            
             icon_path = icon_dir / icon_name
-            package_path.write_bytes(source["package"])
             icon_path.write_bytes(source["icon"])
             digest = hashlib.sha256(source["package"]).hexdigest()
-            checksum_lines.append(f"{digest}  sources/{package_name}")
+            checksum_lines.append(f"{digest}  {download_path}")
 
             index_entry = {
                 "id": source["id"],
                 "name": source["name"],
                 "version": source["version"],
                 "iconURL": f"icons/{icon_name}",
-                "downloadURL": f"sources/{package_name}",
+                "downloadURL": download_path,
                 "languages": source["languages"],
                 "contentRating": source["contentRating"],
                 "baseURL": source["baseURL"],
@@ -1063,7 +1077,7 @@ def write_catalog(
                     "id": source["id"],
                     "name": source["name"],
                     "version": source["version"],
-                    "file": f"sources/{package_name}",
+                    "file": download_path,
                     "repository": source["repository"],
                     "license": source["license"],
                     "upstreamPackageURL": source["upstreamPackageURL"],
