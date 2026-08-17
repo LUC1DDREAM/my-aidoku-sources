@@ -178,50 +178,77 @@ impl Source for AsuraScans {
 		}
 
 		if needs_chapters {
-			// Use API for chapter list to get accurate locked status and dates
-			let api_url = format!("{API_URL}/series/{}/chapters", manga.key);
-			let chapters_result = Request::get(&api_url)
-				.and_then(|req| req.json::<Value>());
+			// Try to get chapter data from API-based astro-island props
+			// New HTML format embeds JSON data in the island component
+			let island_props = html
+				.select_first("astro-island[component-url*='ChapterList']")
+				.and_then(|el| el.attr("props"));
 		
-			let chapters = chapters_result
-				.ok()
-				.and_then(|json| json.get("data").as_array())
-				.map(|arr| {
-					arr.iter()
-						.filter_map(|ch| {
-							let number = ch.get("number").as_float()?;
-							let slug = ch.get("slug").as_string()?.read();
-							let is_premium = ch.get("is_premium").as_bool().unwrap_or(false);
+			let chapters = if let Some(props_str) = island_props {
+				// Parse JSON from astro-island props
+				serde_json::from_str::<serde_json::Value>(&props_str)
+					.ok()
+					.and_then(|json| {
+						json.get("chapters")
+							.and_then(|c| c.get(1))
+							.and_then(|c| c.as_array())
+							.map(|arr| {
+								arr.iter()
+									.filter_map(|obj| {
+										let obj = obj.get(1)?.as_object()?;
+										let number = obj.get("number")?.get(1)?.as_f64()? as f32;
+										let slug = obj.get("slug")?.get(1)?.as_str()?.to_string();
+										let is_premium = obj.get("is_premium")?.get(1)?.as_bool().unwrap_or(false);
+									
+										// Parse date from published_at
+										let date_uploaded = obj.get("published_at")
+											.and_then(|d| d.get(1))
+											.and_then(|d| d.as_str())
+											.and_then(|s| {
+												if let Some((before_dot, _)) = s.split_once('.') {
+													parse_date(format!("{before_dot}Z"), "yyyy-MM-dd'T'HH:mm:ss'Z'")
+												} else {
+													parse_date(s.to_string(), "yyyy-MM-dd'T'HH:mm:ss'Z'")
+												}
+											});
+									
+										let url = helpers::get_chapter_url(&slug, &manga.key);
+									
+										Some(Chapter {
+											key: slug,
+											chapter_number: Some(number),
+											date_uploaded,
+											url: Some(url),
+											locked: is_premium,
+											..Default::default()
+										})
+									})
+									.collect()
+							})
+					})
+					.unwrap_or_default()
+			} else {
+				// Fallback to HTML parsing if no island found
+				html.select("a[href*='/chapter/'][data-astro-prefetch], a[href*='/chapter/'].group")
+					.map(|els| {
+						els.filter_map(|el| {
+							let href = el.attr("abs:href")?;
+							let chapter_str = href.split("/chapter/").nth(1)?.split('?').next()?;
+							let chapter_number = chapter_str.parse::<f32>().ok()?;
+							let url = helpers::get_chapter_url(chapter_str, &manga.key);
 						
-							// Parse ISO 8601 date from published_at
-							let date_uploaded = ch
-								.get("published_at")
-								.as_string()
-								.and_then(|s| {
-									let date_str = s.read();
-									// Handle ISO 8601 with fractional seconds: "2026-08-17T08:19:16.312334Z"
-									// Strip fractional seconds and add Z back
-									if let Some((before_dot, _)) = date_str.split_once('.') {
-										parse_date(format!("{before_dot}Z"), "yyyy-MM-dd'T'HH:mm:ss'Z'")
-									} else {
-										parse_date(date_str, "yyyy-MM-dd'T'HH:mm:ss'Z'")
-									}
-								});
-
-							let url = helpers::get_chapter_url(&slug, &manga.key);
-
 							Some(Chapter {
-								key: slug.to_string(),
-								chapter_number: Some(number),
-								date_uploaded,
+								key: chapter_str.to_string(),
+								chapter_number: Some(chapter_number),
 								url: Some(url),
-								locked: is_premium,
+								locked: false,
 								..Default::default()
 							})
 						})
 						.collect()
-				})
-				.unwrap_or_default();
+					})
+					.unwrap_or_default()
+			};
 
 			manga.chapters = Some(chapters);
 		}
