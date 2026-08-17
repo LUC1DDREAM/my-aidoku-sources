@@ -4,7 +4,7 @@ use aidoku::{
 	Home, HomeComponent, HomeComponentValue, HomeLayout, Link, Listing, ListingProvider, Manga,
 	MangaPageResult, MangaStatus, MangaWithChapter, MigrationHandler, NotificationHandler, Page,
 	PageContent, Result, Source, Viewer, WebLoginHandler,
-	alloc::{String, Vec, string::ToString, vec},
+	alloc::{String, Vec, string::ToString, vec, format},
 	helpers::uri::QueryParameters,
 	imports::{
 		defaults::defaults_get,
