@@ -228,13 +228,14 @@ impl Source for AsuraScans {
 												.map(|unlock_time| {
 													// Calculate time until unlock
 													let now = current_date();
-													let hours_left = ((unlock_time - now) / 3600.0).max(0.0) as i64;
-									
-													if hours_left > 48 {
-														let days = (hours_left / 24) + 1;
+													let hours_left = ((unlock_time - now) / 3600.0).max(0.0);
+								
+													if hours_left > 48.0 {
+														let days = (hours_left / 24.0).ceil() as i32;
 														vec![format!("🔒 Unlocks in {} days", days)]
-													} else if hours_left > 0 {
-														vec![format!("🔒 Unlocks in {} hours", hours_left)]
+													} else if hours_left > 1.0 {
+														let hours = hours_left.ceil() as i32;
+														vec![format!("🔒 Unlocks in {} hours", hours)]
 													} else {
 														vec!["🔒 Premium".to_string()]
 													}
