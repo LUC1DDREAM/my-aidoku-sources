@@ -705,6 +705,9 @@ def apply_local_package_overrides(
             },
             upstream_package_url=str(detail["provenanceURL"]),
         )
+        # Mark this candidate as a local override so we can use the overrides/ path later
+        override["isLocalOverride"] = True
+        override["localOverridePath"] = str(detail["path"])
         result = [
             candidate
             for candidate in result
@@ -1028,8 +1031,6 @@ def write_catalog(
         index_entries = []
         inventory_entries = []
         checksum_lines = []
-        policy = load_policy()
-        local_overrides = policy.get("localPackageOverrides", {})
         
         for source in selected:
             validate_source_id(source["id"])
@@ -1042,12 +1043,11 @@ def write_catalog(
             package_name = f"{source['id']}-v{source['version']}.aix"
             icon_name = f"{source['id']}-v{source['version']}.png"
             
-            # Check if this is a local override
-            is_override = source["id"] in local_overrides
+            # Check if this is a local override using the marker we added
+            is_override = source.get("isLocalOverride", False)
             if is_override:
                 # For overrides, use the existing path from overrides/
-                override_detail = local_overrides[source["id"]]
-                download_path = str(override_detail["path"])
+                download_path = source["localOverridePath"]
             else:
                 # Regular sources go to sources/
                 package_path = source_dir / package_name
