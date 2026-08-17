@@ -229,7 +229,7 @@ impl Source for AsuraScans {
 													// Calculate time until unlock
 													let now = current_date();
 													let hours_left = ((unlock_time - now) / 3600.0).max(0.0);
-							
+								
 													if hours_left > 48.0 {
 														let days = (hours_left / 24.0).ceil() as i32;
 														vec![format!("🔒 Unlocks in {} days", days)]
