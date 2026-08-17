@@ -228,7 +228,8 @@ impl Source for AsuraScans {
 												.map(|unlock_time| {
 													// Calculate time until unlock
 													let now = current_date();
-													let hours_left = ((unlock_time - now) / 3600.0).max(0.0);
+													let seconds_left = (unlock_time - now).max(0);
+													let hours_left = (seconds_left as f64) / 3600.0;
 								
 													if hours_left > 48.0 {
 														let days = (hours_left / 24.0).ceil() as i32;
