@@ -18,7 +18,7 @@
       "name": "Asura Scans",
       "version": 24,
       "iconURL": "icons/en.asurascans-v24.png",
-      "downloadURL": "sources/en.asurascans-v24.aix",
+      "downloadURL": "overrides/en.asurascans-v24.aix",
       "languages": [
         "en"
       ],
@@ -352,7 +352,7 @@
       "name": "Read Comics Online",
       "version": 3,
       "iconURL": "icons/en.readcomicsonline-v3.png",
-      "downloadURL": "sources/en.readcomicsonline-v3.aix",
+      "downloadURL": "overrides/en.readcomicsonline-v3.aix",
       "languages": [
         "en"
       ],
