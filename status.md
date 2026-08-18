@@ -1,6 +1,6 @@
 # Aidoku Source Status
 
-Status last changed: 2026-08-17T13:02:29+00:00
+Status last changed: 2026-08-18T14:52:50+00:00
 
 Checks run daily; this timestamp changes only when catalog or health status changes.
 
@@ -8,7 +8,7 @@ Checks run daily; this timestamp changes only when catalog or health status chan
 - Legacy-only: 49
 - Manually quarantined: 4
 - Automatically quarantined: 3
-- Degraded/under observation: 1
+- Degraded/under observation: 0
 
 ## Quarantined
 
@@ -22,4 +22,4 @@ Checks run daily; this timestamp changes only when catalog or health status chan
 
 ## Under observation
 
-- **EzManga** (`en.ezmanga`): 1 consecutive failed check(s), last observed 2026-08-17
+None.

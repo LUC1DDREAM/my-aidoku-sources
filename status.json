@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-08-17T13:02:29+00:00",
+  "generatedAt": "2026-08-18T14:52:50+00:00",
   "summary": {
     "maintained": 50,
     "legacyOnly": 49,
     "manualQuarantined": 4,
     "automaticQuarantined": 3,
-    "degraded": 1
+    "degraded": 0
   },
   "requiredMaintainedSources": [
     "en.comix",
@@ -88,16 +88,5 @@
       "required": false
     }
   ],
-  "degraded": [
-    {
-      "id": "en.ezmanga",
-      "name": "EzManga",
-      "baseURL": "https://ezmanga.org",
-      "status": "failing",
-      "consecutiveFailures": 1,
-      "consecutiveSuccesses": 0,
-      "lastObservationDate": "2026-08-17",
-      "required": false
-    }
-  ]
+  "degraded": []
 }
