@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-08-23T14:38:39+00:00",
+  "generatedAt": "2026-08-24T14:59:59+00:00",
   "summary": {
     "maintained": 50,
     "legacyOnly": 49,
     "manualQuarantined": 4,
     "automaticQuarantined": 3,
-    "degraded": 1
+    "degraded": 0
   },
   "requiredMaintainedSources": [
     "en.comix",
@@ -88,16 +88,5 @@
       "required": false
     }
   ],
-  "degraded": [
-    {
-      "id": "en.mangareadorg",
-      "name": "MangaRead.org",
-      "baseURL": "https://www.mangaread.org",
-      "status": "failing",
-      "consecutiveFailures": 1,
-      "consecutiveSuccesses": 0,
-      "lastObservationDate": "2026-08-23",
-      "required": false
-    }
-  ]
+  "degraded": []
 }
