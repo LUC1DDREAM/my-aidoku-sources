@@ -1,0 +1,49 @@
+{
+  "release": false,
+  "requested": 6,
+  "built": 6,
+  "sources": [
+    {
+      "id": "en.luc1d-asurascans",
+      "version": 3,
+      "sha256": "3892eb6be450908d92b8fbd8af031f84770081b8c4444114d942af747c50578a",
+      "package_verified": true,
+      "runtime_tested": false
+    },
+    {
+      "id": "en.luc1d-weebcentral",
+      "version": 2,
+      "sha256": "c6c093584f980b88606e629304f77e05b9f923e5bfc7cf62803c3c3a28c46b2b",
+      "package_verified": true,
+      "runtime_tested": false
+    },
+    {
+      "id": "multi.luc1d-nhentai",
+      "version": 3,
+      "sha256": "d4cf514b7a13c9c67e5d35f9e264df8c9b99dfa51b0efdde033c0b2878da027d",
+      "package_verified": true,
+      "runtime_tested": false
+    },
+    {
+      "id": "multi.luc1d-webtoon",
+      "version": 3,
+      "sha256": "f3ca37b7b7e4668b0061432987295e0223b5e73d8339bda73bf7f2af74fdb252",
+      "package_verified": true,
+      "runtime_tested": false
+    },
+    {
+      "id": "multi.luc1d-imhentai",
+      "version": 4,
+      "sha256": "e9a03d2495d0adefcc9bfa087b27050cf2715cec2b0c16f39ad383a2dadd8819",
+      "package_verified": true,
+      "runtime_tested": false
+    },
+    {
+      "id": "multi.luc1d-hentaifox",
+      "version": 4,
+      "sha256": "c24a66eff7168226922867e0fc64d3910fe520fcd53ebc2fe43853d13b639860",
+      "package_verified": true,
+      "runtime_tested": false
+    }
+  ]
+}

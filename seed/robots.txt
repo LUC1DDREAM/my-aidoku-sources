@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://luc1ddream.github.io/my-aidoku-sources/sitemap.xml

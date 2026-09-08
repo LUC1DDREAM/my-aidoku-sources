@@ -1,0 +1,82 @@
+{
+  "name": "LUC1D Independent Sources — EXPERIMENTAL (not device-tested)",
+  "sources": [
+    {
+      "id": "en.luc1d-asurascans",
+      "name": "Asura Scans (LUC1D)",
+      "version": 3,
+      "iconURL": "icons/en.luc1d-asurascans-v3.png",
+      "downloadURL": "sources/en.luc1d-asurascans-v3.aix",
+      "languages": [
+        "en"
+      ],
+      "contentRating": 0,
+      "baseURL": "https://asurascans.com",
+      "minAppVersion": "0.7.1"
+    },
+    {
+      "id": "en.luc1d-weebcentral",
+      "name": "Weeb Central (LUC1D)",
+      "version": 2,
+      "iconURL": "icons/en.luc1d-weebcentral-v2.png",
+      "downloadURL": "sources/en.luc1d-weebcentral-v2.aix",
+      "languages": [
+        "en"
+      ],
+      "contentRating": 1,
+      "baseURL": "https://weebcentral.com"
+    },
+    {
+      "id": "multi.luc1d-hentaifox",
+      "name": "HentaiFox (LUC1D)",
+      "version": 4,
+      "iconURL": "icons/multi.luc1d-hentaifox-v4.png",
+      "downloadURL": "sources/multi.luc1d-hentaifox-v4.aix",
+      "languages": [
+        "multi"
+      ],
+      "contentRating": 2,
+      "baseURL": "https://hentaifox.com"
+    },
+    {
+      "id": "multi.luc1d-imhentai",
+      "name": "IMHentai (LUC1D)",
+      "version": 4,
+      "iconURL": "icons/multi.luc1d-imhentai-v4.png",
+      "downloadURL": "sources/multi.luc1d-imhentai-v4.aix",
+      "languages": [
+        "multi"
+      ],
+      "contentRating": 2,
+      "baseURL": "https://imhentai.xxx"
+    },
+    {
+      "id": "multi.luc1d-nhentai",
+      "name": "nhentai (LUC1D)",
+      "version": 3,
+      "iconURL": "icons/multi.luc1d-nhentai-v3.png",
+      "downloadURL": "sources/multi.luc1d-nhentai-v3.aix",
+      "languages": [
+        "All",
+        "en",
+        "ja",
+        "zh"
+      ],
+      "contentRating": 2,
+      "baseURL": "https://nhentai.net"
+    },
+    {
+      "id": "multi.luc1d-webtoon",
+      "name": "WEBTOON (LUC1D)",
+      "version": 3,
+      "iconURL": "icons/multi.luc1d-webtoon-v3.png",
+      "downloadURL": "sources/multi.luc1d-webtoon-v3.aix",
+      "languages": [
+        "en"
+      ],
+      "contentRating": 1,
+      "baseURL": "https://m.webtoons.com",
+      "minAppVersion": "0.7.1"
+    }
+  ]
+}

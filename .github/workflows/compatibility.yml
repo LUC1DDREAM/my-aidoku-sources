@@ -1,0 +1,49 @@
+name: Legacy PanelNest compatibility
+on:
+  schedule:
+    - cron: '23 */6 * * *'
+  workflow_dispatch:
+    inputs:
+      seed:
+        description: 'Deploy frozen verified rollback snapshot instead of canonical site'
+        type: boolean
+        required: true
+        default: false
+permissions:
+  contents: read
+concurrency:
+  group: legacy-pages
+  cancel-in-progress: false
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Validate mirror guardrails
+        run: python -m unittest -v
+      - name: Fetch and validate complete publication
+        env:
+          USE_SEED: ${{ inputs.seed == true }}
+        run: |
+          if [ "$USE_SEED" = "true" ]; then
+            python mirror.py --seed
+          else
+            python mirror.py
+          fi
+      - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa
+        with:
+          path: dist/
+  deploy:
+    needs: mirror
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e
