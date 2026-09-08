@@ -106,4 +106,27 @@ class PublicationTests(unittest.TestCase):
     def test_dot_path(self):
         with self.assertRaises(ValueError): mirror.safe_path('.')
 
+
+    def test_authorized_public_catalog_aliases(self):
+        import json, hashlib
+        with tempfile.TemporaryDirectory() as d:
+            site=Path(d)/'site'; shutil.copytree('seed',site)
+            cat=json.loads((site/'experimental/index.json').read_bytes())
+            for name in ('index.json','index.min.json'):
+                (site/name).write_text(json.dumps(cat))
+            for folder in ('sources','icons'):
+                shutil.copytree(site/'experimental'/folder,site/folder)
+            report=json.loads((site/'experimental/build-report.json').read_bytes())
+            report['release']=True
+            for source in report['sources']:
+                source.update(user_reported_working=True,release_authorized=True)
+            (site/'experimental/build-report.json').write_text(json.dumps(report))
+            def checksums():
+                (site/'CHECKSUMS.sha256').write_text(''.join(hashlib.sha256(p.read_bytes()).hexdigest()+'  '+p.relative_to(site).as_posix()+'\n' for p in sorted(site.rglob('*')) if p.is_file() and p!=site/'CHECKSUMS.sha256'))
+            checksums()
+            mirror.validate(site)
+            report['sources'][0]['release_authorized']=False
+            (site/'experimental/build-report.json').write_text(json.dumps(report)); checksums()
+            with self.assertRaises(ValueError): mirror.validate(site)
+
 if __name__=='__main__': unittest.main()

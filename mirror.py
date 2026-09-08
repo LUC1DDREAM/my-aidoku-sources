@@ -61,17 +61,30 @@ def validate(root):
         p = root/name
         if p.is_symlink() or hashlib.sha256(p.read_bytes()).hexdigest()!=digest:
             raise ValueError('Hash mismatch: '+name)
-    for name in ['index.json','index.min.json']:
-        if json.loads((root/name).read_bytes())['sources'] != []:
-            raise ValueError('Supported catalog must remain empty')
     catalog = json.loads((root/'experimental/index.min.json').read_bytes())
     if catalog != json.loads((root/'experimental/index.json').read_bytes()):
         raise ValueError('Catalog aliases disagree')
     if len(catalog['sources'])!=len(IDS) or {s['id'] for s in catalog['sources']}!=IDS:
         raise ValueError('Unexpected source set; review required')
     report=json.loads((root/'experimental/build-report.json').read_bytes())
-    if report.get('release') is not False:
-        raise ValueError('Experimental gate changed')
+    public = report.get('release') is True
+    if report.get('release') not in (True, False):
+        raise ValueError('Missing publication classification')
+    for name in ('index.json','index.min.json'):
+        top = json.loads((root/name).read_bytes())
+        if public and top != catalog:
+            raise ValueError('Public catalog aliases disagree')
+        if not public and top['sources'] != []:
+            raise ValueError('Unapproved public catalog')
+    if public:
+        evidence = report.get('sources', [])
+        if len(evidence) != len(IDS) or {s['id'] for s in evidence} != IDS or not all(s.get('package_verified') is True and s.get('release_authorized') is True for s in evidence):
+            raise ValueError('Missing public release approval')
+        for item in catalog['sources']:
+            for key in ('downloadURL','iconURL'):
+                path = safe_path(item[key])
+                if (root/path).read_bytes() != (root/'experimental'/path).read_bytes():
+                    raise ValueError('Public/legacy asset mismatch')
     for item in catalog['sources']:
         package=root/'experimental'/safe_path(item['downloadURL'])
         icon=root/'experimental'/safe_path(item['iconURL'])
