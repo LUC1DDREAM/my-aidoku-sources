@@ -64,6 +64,41 @@ class PublicationTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError,'icon mismatch'): mirror.run(out)
             self.assertFalse(out.exists())
 
+    def test_legitimate_version_bump_keeps_installed_assets(self):
+        # Test fixture only: simulate a new package version, retaining old URLs.
+        from unittest.mock import patch
+        import hashlib, json, zipfile
+        with tempfile.TemporaryDirectory() as d:
+            site=Path(d)/'site'; shutil.copytree('seed',site)
+            cat=json.loads((site/'experimental/index.json').read_bytes())
+            item=cat['sources'][0]; old_package=site/'experimental'/item['downloadURL']
+            item['version']+=1
+            stem=f"{item['id']}-v{item['version']}"
+            item['downloadURL']='sources/'+stem+'.aix'
+            old_icon=site/'experimental'/item['iconURL']
+            item['iconURL']='icons/'+stem+'.png'
+            shutil.copyfile(old_icon,site/'experimental'/item['iconURL'])
+            with zipfile.ZipFile(old_package) as src, zipfile.ZipFile(site/'experimental'/item['downloadURL'],'w') as dst:
+                for name in src.namelist():
+                    data=src.read(name)
+                    if name=='Payload/source.json':
+                        manifest=json.loads(data); manifest['info']['version']=item['version']
+                        data=json.dumps(manifest).encode()
+                    dst.writestr(name,data)
+            for name in ['index.json','index.min.json']:
+                (site/'experimental'/name).write_text(json.dumps(cat))
+            lines=[]
+            for path in sorted(site.rglob('*')):
+                if path.is_file() and path != site/'CHECKSUMS.sha256':
+                    lines.append(hashlib.sha256(path.read_bytes()).hexdigest()+'  '+path.relative_to(site).as_posix())
+            (site/'CHECKSUMS.sha256').write_text('\n'.join(lines)+'\n')
+            out=Path(d)/'out'
+            with patch.object(mirror,'fetch',side_effect=lambda name:(site/name).read_bytes()):
+                mirror.run(out)
+            self.assertEqual(mirror.validate(out),mirror.validate(site))
+            for old in (Path('seed')/'experimental/sources').iterdir():
+                self.assertEqual(old.read_bytes(),(out/'experimental/sources'/old.name).read_bytes())
+
     def test_no_redirects(self):
         with self.assertRaises(ValueError):
             mirror.NoRedirect().redirect_request(None,None,302,'redirect',{},'https://evil.invalid/')

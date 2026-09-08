@@ -76,6 +76,11 @@ def validate(root):
         package=root/'experimental'/safe_path(item['downloadURL'])
         icon=root/'experimental'/safe_path(item['iconURL'])
         with zipfile.ZipFile(package) as z:
+            names = z.namelist()
+            if len(names) != len(set(names)):
+                raise ValueError('Duplicate package members')
+            for member in names:
+                safe_path(member.rstrip('/'))
             if sum(i.file_size for i in z.infolist())>LIMIT:
                 raise ValueError('Package expansion limit')
             info=json.loads(z.read('Payload/source.json'))['info']
