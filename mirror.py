@@ -16,6 +16,7 @@ BASE = 'https://luc1ddream.github.io/panelnest/'
 IDS = {'en.luc1d-asurascans', 'en.luc1d-weebcentral', 'multi.luc1d-hentaifox',
        'multi.luc1d-imhentai', 'multi.luc1d-nhentai', 'multi.luc1d-webtoon'}
 LIMIT = 32 * 1024 * 1024
+MAX_MANIFEST_ENTRIES = 4096
 
 class NoRedirect(urllib.request.HTTPRedirectHandler):
     def redirect_request(self, req, fp, code, msg, headers, newurl):
@@ -46,7 +47,7 @@ def manifest(data):
         if not re.fullmatch('[0-9a-f]{64}', digest) or name in entries or name=='CHECKSUMS.sha256':
             raise ValueError('Invalid checksum manifest')
         entries[name] = digest
-    if not 15 <= len(entries) <= 200:
+    if not 15 <= len(entries) <= MAX_MANIFEST_ENTRIES:
         raise ValueError('Unexpected manifest size')
     return entries
 

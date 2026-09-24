@@ -23,6 +23,13 @@ class MirrorTests(unittest.TestCase):
     def test_duplicate_manifest(self):
         line='0'*64+'  index.json\n'
         with self.assertRaises(ValueError): mirror.manifest((line*20).encode())
+    def test_manifest_entry_limit_covers_live_compatibility_tree(self):
+        # The canonical PanelNest tree currently contains more than 300 files.
+        accepted=''.join('0'*64+f'  sources/package-{i:04}.aix\n' for i in range(306))
+        self.assertEqual(len(mirror.manifest(accepted.encode())),306)
+        too_many=''.join('0'*64+f'  sources/package-{i:04}.aix\n' for i in range(mirror.MAX_MANIFEST_ENTRIES+1))
+        with self.assertRaisesRegex(ValueError,'Unexpected manifest size'):
+            mirror.manifest(too_many.encode())
 
 class PublicationTests(unittest.TestCase):
     def test_seed_rollback(self):
